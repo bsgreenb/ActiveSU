@@ -1,0 +1,47 @@
+.content{
+    min-height: 100px;
+    border-bottom: 1px solid #F2F3F4;
+    padding: 5px;
+    margin-top: 10px;
+}
+
+.content.first{
+    border-top: 1px solid #F2F3F4;
+    margin-top: 0;
+}
+
+.content .head{
+    line-height: 42px;
+}
+.content .name{
+    font-size: 32px;
+}
+
+.content .post{
+    background-color: #F2F3F4;
+    margin: 5px 0 0 5px;
+}
+
+.content .post div{
+    border-bottom: 1px solid #EBEBEB;
+    border-top: 1px solid #FBFBFB;
+    padding: 8px;
+}
+
+.content .time, .content .active-info{
+    color: #999999;
+    font-size: 11px;
+}
+
+.content .active-info{
+    font-size: 13px;
+    margin-left: 5px;
+}
+
+.content .comment{
+    width: 80%;
+}
+
+.content #post-comment{
+    margin-left: 10px;
+}

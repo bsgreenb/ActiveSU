@@ -1,0 +1,11 @@
+*.swp
+
+.DS_Store*
+
+wordoutdb
+*.log
+*.pot
+*.pyc
+
+.idea/
+activitydb

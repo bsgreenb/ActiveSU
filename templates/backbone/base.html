@@ -1,0 +1,60 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html lang="en">
+<head>
+    <title>{% block title %}{% endblock %}</title>
+	<link href="/static/css/bootstrap.css" type="text/css" title="default" rel="stylesheet" media="screen, projection">
+	<link href="/static/css/main.css" type="text/css" title="default" rel="stylesheet" media="screen, projection">
+
+    {% block css-link %}
+
+    {% endblock %}
+
+
+	<style type="text/css">
+	{% block css %}
+
+
+	{% endblock %}
+	</style>
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js
+"></script>
+	<script src="/static/js/plugin/bootstrap.js"></script> <!-- dropdown tabs -->
+
+	{% block js%}
+	
+	
+	{% endblock %}
+</head>
+<body>
+    <div class="navbar">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="brand" href="/">LOGO</a>
+            <ul class="nav">
+                <li class="active">
+                    <a href="#">Home</a>
+                </li>
+            </ul>
+
+
+
+        {% block header%}
+
+
+
+
+        {% endblock %}
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+        {% block content %}
+
+        {% endblock content %}
+        <footer>
+            <p>&copy; 2012 | <a href="/about/"> About Us</a></p>
+        </footer>
+     </div> <!-- /container -->
+</body>
+</html>

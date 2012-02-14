@@ -1,5 +1,7 @@
 # Django settings for django_activity project.
+import os.path
 
+SOUTH_TESTS_MIGRATE = False # unittest might need this
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
@@ -7,12 +9,22 @@ ADMINS = (
     # ('Your Name', 'your_email@example.com'),
 )
 
+#Defaults + request processior
+TEMPLATE_CONTEXT_PROCESSORS = ("django.contrib.auth.context_processors.auth",
+                               "django.core.context_processors.debug",
+                               "django.core.context_processors.i18n",
+                               "django.core.context_processors.media",
+                               "django.core.context_processors.static",
+                               "django.contrib.messages.context_processors.messages",
+                               "django.core.context_processors.request",)
+
+
 MANAGERS = ADMINS
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': '',                      # Or path to database file if using sqlite3.
+        'ENGINE': 'sqlite3', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
+        'NAME': 'activitydb',                      # Or path to database file if using sqlite3.
         'USER': '',                      # Not used with sqlite3.
         'PASSWORD': '',                  # Not used with sqlite3.
         'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
@@ -95,6 +107,7 @@ TEMPLATE_LOADERS = (
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.transaction.TransactionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -103,9 +116,7 @@ MIDDLEWARE_CLASSES = (
 ROOT_URLCONF = 'django_activity.urls'
 
 TEMPLATE_DIRS = (
-    # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
-    # Always use forward slashes, even on Windows.
-    # Don't forget to use absolute paths, not relative paths.
+    os.path.join(os.path.dirname(__file__), 'templates'),  # point to templates directory
 )
 
 INSTALLED_APPS = (
@@ -115,10 +126,9 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # Uncomment the next line to enable the admin:
-    # 'django.contrib.admin',
-    # Uncomment the next line to enable admin documentation:
-    # 'django.contrib.admindocs',
+    'django_activity.activity',
+    'django.contrib.admin', # admin page
+    'south',
 )
 
 # A sample logging configuration. The only tangible logging
@@ -143,3 +153,9 @@ LOGGING = {
         },
     }
 }
+
+LOGIN_REDIRECT_URL = '/'  # fail on require_login
+
+AUTHENTICATION_BACKENDS = (
+    'django_activity.activity.backends.EmailOrUsernameModelBackend',
+    'django.contrib.auth.backends.ModelBackend')

@@ -1,17 +1,15 @@
 from django.conf.urls.defaults import patterns, include, url
+from django.contrib.auth.views import login, password_reset, password_reset_done, password_reset_confirm, password_reset_complete, password_change, password_change_done
+from django.contrib import admin
+admin.autodiscover()
 
-# Uncomment the next two lines to enable the admin:
-# from django.contrib import admin
-# admin.autodiscover()
+from activity.custom_decorator import anonymous_required
+from activity import views
+
+
+
+
 
 urlpatterns = patterns('',
-    # Examples:
-    # url(r'^$', 'django_activity.views.home', name='home'),
-    # url(r'^django_activity/', include('django_activity.foo.urls')),
-
-    # Uncomment the admin/doc line below to enable admin documentation:
-    # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
-
-    # Uncomment the next line to enable the admin:
-    # url(r'^admin/', include(admin.site.urls)),
+    (r'^$', views.main_page),
 )

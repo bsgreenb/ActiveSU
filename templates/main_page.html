@@ -1,0 +1,30 @@
+{% extends 'backbone/base.html' %}
+
+{% block css-link %}
+
+<link href="/static/css/wall.css" type="text/css" title="default" rel="stylesheet" media="screen, projection">
+
+{% endblock %}
+
+{% block css %}
+#school-head{
+    margin: 0 20px 10px;
+}
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+
+        <h2 id="school-head">Connect stanford students offline.</h2>
+
+        <div class="span7">
+
+            {% include 'backbone/wall.html' %}
+            {% include 'backbone/wall.html' %}
+            {% include 'backbone/wall.html' %}
+            {% include 'backbone/wall.html' %}
+            {% include 'backbone/wall.html' %}
+
+        </div>
+    </div>
+{% endblock %}
