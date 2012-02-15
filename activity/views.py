@@ -43,7 +43,7 @@ def main_page(request):
 def activity_page(request, activity_url):
     try:
         activity_page = Activity_Page.get(url_code = activity_url)
-    except DoesNotExist:
+    except Activity_Page.DoesNotExist:
         return HttpResponseRedirect(reverse('main_page'))
 
     #If they're logged in and not a user of this page, we want to make them a user
@@ -59,7 +59,19 @@ def activity_page(request, activity_url):
     # We want to get future events, ordered by their occuring date
     future_events = activity_page.get_future_events_and_comments()
 
-    return render_to_response('activity_page.html', dict(activity_page_users = activity_page_users, all_posts = all_posts, future_events = future_event), context_instance=RequestContext(request))
+    if not request.session.get('form_with_error', ''):
+        message_form_with_error = request.session['message_form_with_error']
+        del request.session['message_form_with_error']
+    else:
+        message_form_with_error = ''
+
+    if not request.session.get('event_form_with_error', ''):
+        event_form_with_error = request.session['event_form_with_error']
+        del request.session['event_form_with_error']
+    else:
+        event_form_with_error = ''
+
+    return render_to_response('activity_page.html', dict(activity_page_users = activity_page_users, all_posts = all_posts, future_events = future_events, message_form_with_error = message_form_with_error, event_form_with_error = event_form_with_error), context_instance=RequestContext(request))
 
 #Note: We currently assume that they're a member of the page, but in later versions we might have to think out a more complex system for joining and leaving of pages.
 @login_required
@@ -80,20 +92,18 @@ def submit_comment(request):
         return Http404
 
 #TODO: Will take both text and event posts
-def create_post(request, type):
+@login_required
+def submit_post(request, type):
 
     def check_activity_page(page_number):
         try:
             activity_page = Activity_Page.objects.get(pk = page_number)
         except Activity_Page.DoesNotExist:
-            results = {
-                'status':'invalid page.'
-            }
-            return HttpResponse(simplejson.dumps(results), 'application/javascript')
+            return Http404
         else:
             return activity_page
 
-    if request.is_ajax():
+    if request.method == 'POST':
         if type == 'message':
             form = TextPostForm(request.POST)
             if form.is_valid():
@@ -104,17 +114,10 @@ def create_post(request, type):
 
                     new_text_post = Text_Post(post = new_post, content = form.cleaned_data['content'])
                     new_text_post.save()
-
-                results = {
-                    'status':'OK'
-                }
-                return HttpResponse(simplejson.dumps(results), 'application/javascript')
             else:
-                results = {
-                    'stauts':'invalid post.'
-                }
-                return HttpResponse(simplejson.dumps(results), 'application/javascript')
+                request.session['message_form_with_error'] = form
 
+            return HttpResponseRedirect(reverse('activity_page', args=[activity_page.url_code]))
 
         elif type == 'event':
             form = EventPostForm(request.POST)
@@ -128,31 +131,24 @@ def create_post(request, type):
                     start_datetime = form.cleaned_data['start_date'] + form.cleaned_data['start_time']
 
                     if form.cleaned_data.get('end_date', '') and form.cleaned_data.get('end_time', ''):
-                        end_datetime = form.cleaned_data['end_date'] + form.cleaned_data['start_time']
+                        end_datetime = form.cleaned_data['end_date'] + form.cleaned_data['end_time']
                     else:
                         end_datetime = ''
 
-                    Event_Post.create(
+                    new_event_post = Event_Post(
                         post = new_post,
                         where = form.cleaned_data['where'],
                         start_datetime = start_datetime,
                         end_datetime = end_datetime,
                         description = form.cleaned_data['description']
                     )
-
-                results = {
-                    'status':'OK'
-                }
-                return HttpResponse(simplejson.dumps(results), 'application/javascript')
-
+                    new_event_post.save()
             else:
-                results = {
-                    'status':'error',
-                    'data':form.errors
-                }
-                return HttpResponse(simplejson.dumps(results), 'application/javascript')
-    else:
-        return HttpResponse(simplejson.dumps({'status':'invalid request'}))
+                request.session['event_form_with_error'] = form
+
+            return HttpResponseRedirect(reverse('activity_page', args=[activity_page.url_code]))
+
+    return HttpResponseRedirect(reverse('main_page'))
 
 
 
