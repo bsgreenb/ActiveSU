@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 #from django.db import connection #for debugging
 
 class Activity_Page(models.Model):
-    name = models.CharField() #This is also the basis for the pretty url
+    name = models.CharField(max_length=50) #This is also the basis for the pretty url
     created = models.DateTimeField(auto_now_add = True)
     enabled = models.BooleanField(default = True)
     users = models.ManyToManyField(User, through='Activity_Page_Users')
@@ -47,7 +47,7 @@ class Text_Post(models.Model):
 
 class Event_Post(models.Model):
     post = models.OneToOneField(Post)
-    where = models.CharField()
+    where = models.CharField(max_length=200)
     when = models.DateTimeField()
     description = models.CharField(max_length=500, null=True)
 
