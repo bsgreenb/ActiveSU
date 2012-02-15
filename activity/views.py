@@ -4,6 +4,8 @@ from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.core.urlresolvers import reverse
 from django.contrib.auth import authenticate, login as auth_login, logout  #We want to avoid overriding our own login function
 from django.contrib.auth.decorators import login_required
+from django.utils import simplejson
+from django.db import transaction
 
 from activity.forms import RegistrationForm, TextPostForm
 
@@ -50,23 +52,59 @@ def submit_post(request):
 
 
 def create_post(request, type):
-    if request.method == 'POST':
+
+    def check_activity_page(page_number):
+        try:
+            activity_page = Activity_Page.objects.get(pk = page_number)
+        except Activity_Page.DoesNotExist:
+            results = {
+                'status':'invalid page.'
+            }
+            return HttpResponse(simplejson.dumps(results), 'application/javascript')
+        else:
+            return activity_page
+
+    if request.is_ajax():
         if type == 'message':
             form = TextPostForm(request.POST)
             if form.is_valid():
-                try:
-                    activity_page = Activity_Page.objects.get(pk = form.cleaned_data['activity_page'])
-                except Activity_Page.DoesNotExist:
-                    return Http404
+                activity_page = check_activity_page(form.cleaned_data['activity_page'])
+                with transaction.commit_on_success():
+                    new_post = Post.create(user = request.user, activity_page = activity_page)
+                    Text_Post.create(post = new_post, content = form.cleaned_data['content'])
 
-                new_post = Post.create(user = request.user, activity_page = activity_page)
-                Text_Post.create(post = new_post, content = form.cleaned_data['content'])
-
-                #TODO redirect to the right activity page
-
-                return HttpResponseRedirect('/')
+                results = {
+                    'status':'OK'
+                }
+                return HttpResponse(simplejson.dumps(results), 'application/javascript')
 
         elif type == 'event':
-            form =
+            form = EventPostForm(request.POST)
+            if form.is_valid():
+                activity_page = check_activity_page(form.cleaned_data['activity_page'])
+                with transaction.commit_on_success():
+                    new_post = Post.create(user = request.user, activity_page = activity_page)
+
+                    #TODO how to add those two times
+                    start_datetime = form.cleaned_data['start_date'] + form.cleaned_data['start_time']
+
+                    if form.cleaned_data.get('end_date', '') and form.cleaned_data.get('end_time', ''):
+                        end_datetime = form.cleaned_data['end_date'] + form.cleaned_data['start_time']
+                    else:
+                        end_datetime = ''
+
+                    Event_Post.create(
+                        post = new_post,
+                        where = form.cleaned_data['where'],
+                        start_datetime = start_datetime,
+                        end_datetime = end_datetime,
+                        description = form.cleaned_data['description']
+                    )
+
+                results = {
+                    'status':'OK'
+                }
+                return HttpResponse(simplejson.dumps(results), 'application/javascript')
+
 
 

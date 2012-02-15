@@ -48,3 +48,8 @@ class TextPostForm(forms.Form):
 
 class EventPostForm(forms.Form):
     start_date = forms.DateTimeField()
+    start_time = forms.TimeField()
+    end_date = forms.DateTimeField(required = False)
+    end_time = forms.TimeField(required = False)
+    where = forms.CharField(max_length = 200)
+    description = forms.CharField(mex_length = 500)
