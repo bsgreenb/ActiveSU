@@ -5,7 +5,6 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth import authenticate, login as auth_login, logout  #We want to avoid overriding our own login function
 from django.contrib.auth.decorators import login_required
 
-
 from activity.forms import RegistrationForm, TextPostForm
 
 @login_required
@@ -31,16 +30,21 @@ def register_page(request):
 
     return render_to_response('registration/register.html', dict(form = form), context_instance=RequestContext(request))
 
-
-
-
-
+#TODO: need to get a model function to get the 
 def main_page(request):
     return render_to_response('main_page.html', dict(), context_instance=RequestContext(request))
 
+#TODO.  Need to decide how we do events vs all sorting.
 def activity_page(request):
     return render_to_response('activity_page.html', dict(), context_instance=RequestContext(request))
 
+#TODO
+def submit_comment(request):
+    pass
+
+#TODO: Will take both text and event posts
+def submit_post(request):
+    pass
 
 
 

@@ -48,4 +48,3 @@ class TextPostForm(forms.Form):
 
 class EventPostForm(forms.Form):
     start_date = forms.DateTimeField()
-    
