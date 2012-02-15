@@ -6,7 +6,6 @@ from activity.custom_decorator import anonymous_required
 from activity import views
 
 
-
 admin.autodiscover()
 
 
@@ -23,4 +22,9 @@ urlpatterns = patterns('',
     # core
     url(r'^$', views.main_page, name="main_page"),
     (r'^/(\w+)$', views.activity_page),
+
+
+    (r'^postmessage/$', views.create_post, {'type':'message'}),
+    (r'^postevent/$', views.create_post, {'type':'event'}),
+
 )

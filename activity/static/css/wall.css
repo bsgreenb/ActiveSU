@@ -17,17 +17,28 @@
     font-size: 32px;
 }
 
-.content .post{
+.content .index-posts .post{
+    font-size: 14px;
+    background-color:#F2F3F4;
+    padding: 8px;
+    border-top: 1px solid #EBEBEB;
+}
+
+.content .post-message{
+    width: 95%;
+    padding: 10px;
+}
+
+.content .posts{
     background-color: #FFFFFF;
     margin: 5px 0 0 ;
     font-size: 14px;
 }
 
 .content .posts .post{
-    border-bottom: 1px solid #EBEBEB;
-    border-top: 1px solid #FBFBFB;
+    border-top: 1px solid #F2F3F4;
     padding: 8px;
-    margin-top: 5px;
+    margin-top: 10px;
 }
 
 .content .post-end, .content .active-info{
@@ -49,9 +60,10 @@
 
 .content .posts .post .comments div{
     padding:5px;
+    border-top: 1px solid #EBEBEB;
 }
 
 .content .posts .post .comments .comment{
-    margin: 0px;
+    margin: 0;
     width: 70%;
 }

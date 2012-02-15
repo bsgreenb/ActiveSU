@@ -39,3 +39,12 @@ class RegistrationForm(BootstrapForm):
             if password1 == password2:
                 return password2
         raise forms.ValidationError('Passwords do not match')
+
+
+
+class TextPostForm(forms.Form):
+    content = forms.CharField(max_length=500)
+    activity_page = forms.IntegerField(min_value=1)
+
+class EventPostForm(forms.Form):
+    start_date = forms.DateTimeField()
