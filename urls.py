@@ -22,5 +22,5 @@ urlpatterns = patterns('',
 
     # core
     url(r'^$', views.main_page, name="main_page"),
-    (r'^event/$', views.activity_page),
+    (r'^/(\w+)$', views.activity_page),
 )
