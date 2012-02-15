@@ -129,6 +129,7 @@ INSTALLED_APPS = (
     'django_activity.activity',
     'django.contrib.admin', # admin page
     'south',
+    'bootstrap',
 )
 
 # A sample logging configuration. The only tangible logging
