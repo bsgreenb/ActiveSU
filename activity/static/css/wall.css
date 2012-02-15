@@ -1,7 +1,7 @@
 .content{
     min-height: 100px;
     border-bottom: 1px solid #F2F3F4;
-    padding: 5px;
+    padding: 5px 5px 15px 5px;
     margin-top: 10px;
 }
 
@@ -18,17 +18,19 @@
 }
 
 .content .post{
-    background-color: #F2F3F4;
-    margin: 5px 0 0 5px;
+    background-color: #FFFFFF;
+    margin: 5px 0 0 ;
+    font-size: 14px;
 }
 
-.content .post div{
+.content .posts .post{
     border-bottom: 1px solid #EBEBEB;
     border-top: 1px solid #FBFBFB;
     padding: 8px;
+    margin-top: 5px;
 }
 
-.content .time, .content .active-info{
+.content .post-end, .content .active-info{
     color: #999999;
     font-size: 11px;
 }
@@ -38,10 +40,18 @@
     margin-left: 5px;
 }
 
-.content .comment{
-    width: 80%;
+.content .posts .post .comments{
+    margin: 5px 15px 0 15px;;
+    background-color: #F2F3F4;
+    font-size: 12px;
+    padding: 0;
 }
 
-.content #post-comment{
-    margin-left: 10px;
+.content .posts .post .comments div{
+    padding:5px;
+}
+
+.content .posts .post .comments .comment{
+    margin: 0px;
+    width: 70%;
 }

@@ -1,40 +1,26 @@
 {% extends 'backbone/base.html' %}
 
 {% block title %} - User Login{% endblock %}
-
 {% block css %}
-
-label{
-	width: 75px;
-	padding-right: 5px;
-}
-
 ul.errorlist{
-	margin-left: 80px;
+	margin: 10px 0;
 }
 
 h1{
 	border-bottom: 1px solid #EEEEEE;
 	padding-bottom: 10px;
 }
-
 {% endblock %}
 
-{% block header %}
-
-{% endblock%}
-
 {% block content %}
-        <h1>Sign in</h1>
-        <form method="post" action=".">
-            {% csrf_token %}
-            {{form.as_p}}
-			<p>
-				<label for="id_submit"></label>
-    			<input type="submit" value="login" class="btn primary"/>
-            	<!-- add later <a href="/password_reset">forgot password</a>-->
-				or <a href="/register/">Sign up</a>
-	            <input type="hidden" name="next" value="{% if next %}{{next}}{% else%}/{%endif%}" />
-			</p>
-        </form>
+    <h1>Sign in</h1>
+    <form method="post" action=".">
+        {% csrf_token %}
+        {{form.as_p}}
+        <p>
+            <input type="submit" value="login" class="btn primary"/>
+            or <a href="/register/">Sign up</a>
+            <input type="hidden" name="next" value="{% if next %}{{next}}{% else%}/{%endif%}" />
+        </p>
+    </form>
 {% endblock %}

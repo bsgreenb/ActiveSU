@@ -2,35 +2,12 @@
 
 {% block title %} - User Registration{% endblock %}
 
-{% block css %}
-
-label{
-	padding-right: 5px;
-}
-
-ul.errorlist{
-	margin-left: 135px;
-}
-
-h1{
-	border-bottom: 1px solid #EEEEEE;
-	padding-bottom: 10px;
-}
-
-{% endblock %}
-
-{% block header %}
-{% endblock %}
-
-
 {% block content %}
-	<h1>Sign up</h1>
-        <form method="post" action=".">
-            {% csrf_token %}
-            {{form.as_p}}
-            <p>
-				<label id="id_register"></label>
-				<input type="submit" value="register" class="btn primary"/>
-			</p>
-        </form>
+    <form method="post" action="." class="form-horizontal">
+        {% csrf_token %}
+        {{form}}
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Register</button>
+        </div>
+    </form>
 {% endblock content %}

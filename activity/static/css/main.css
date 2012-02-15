@@ -1,0 +1,20 @@
+ul.errorlist{
+    list-style: none;
+}
+
+ul.errorlist li{
+    color: #B94A48;
+}
+
+#login-form{
+    margin: 0;
+    float: right;
+}
+
+#sign-up, #sign-up a{
+    color: #FFFFFF;
+}
+
+footer{
+    margin-top: 10px;
+}

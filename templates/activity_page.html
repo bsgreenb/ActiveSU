@@ -1,0 +1,89 @@
+{% extends 'backbone/base.html' %}
+
+
+{% block css-link %}
+
+<link href="/static/css/wall.css" type="text/css" title="default" rel="stylesheet" media="screen, projection">
+
+<link href="/static/css/feed.css" type="text/css" title="default" rel="stylesheet" media="screen, projection">
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+
+        <div class="span7">
+            <div class="content">
+                <div class="head">
+                    <a href="#" class="name">Tennis</a>
+                    <span class="active-info">200 posts | 200 active members</span>
+                </div>
+
+                <div>
+                    <form>
+                        <input class="input-xlarge" placeholder="post..."/>
+                        <div>
+                            <button class="btn btn-success">Post Message</button> or <button class="btn">Create Event</button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="posts">
+                    <div class="post">
+                        <b>rui xia: </b> I'd like to play basketball with someone wednesday night at court. Meet me at stanford university ave.
+                        <span class="post-end">
+                            | 15 hours ago |
+                            <a href="#">
+                                <i class="icon-pencil"></i>
+                                comment
+                            </a>
+                        </span>
+
+                        <div class="comments">
+                            <div><a href="#"><i class="icon-comment"></i> View all 10 comments</a></div>
+                            <div><b>Dong Jon: </b>let's meet at 7pm to play tennis.</div>
+                            <div><b>Dong Jon: </b>let's meet at 7pm to play tennis.</div>
+
+                            <div>
+                                <input class="input-large comment" placeholder="Write a comment...">
+                            </div>
+                        </div>
+
+                    </div>
+                    
+
+
+                    
+
+                    <div class="post">
+                        <i class="icon-calendar"></i><b>Event</b>
+                        <h5>Date: Wednesday 2/15/2011</h5>
+                        <h5>Show Up Time: 7pm</h5>
+                        <h5>Location: tennis court</h5>
+                        <h5>Number of People Attend: 80</h5>
+                        we are going to meet at bar bar bar bar bar to play tennis. show up at bar bar bar bar bar bar fdsfdsf dsfds fsdfds dsfds
+                        <span class="post-end">
+                            | 15 hours ago
+                        </span>
+                    </div>
+
+                    <div class="post">
+                        <b>rui xia:</b> I'd like to play basketball with someone wednesday night at court. Meet me at stanford university ave.
+                        <span class="post-end">
+                            | 15 hours ago |
+                            <a href="#">
+                                <i class="icon-pencil"></i>
+                                comment
+                            </a>
+                        </span>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}
+
+
+
