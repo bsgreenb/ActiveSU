@@ -33,7 +33,7 @@ class Activity_Page(models.Model):
         """
         Gets all future events for the activity page, ordered by when the event will happen, not when it was posted. Also gets the comments for those events
         """
-        return Event_Post.objects.filter(post__activity_page=self).prefetch_related('comment_set').order_by('-post_time', '-comment__comment_time')
+        return Event_Post.objects.filter(post__activity_page=self).prefetch_related('comment_set').order_by('start_datetime', '-comment__comment_time')
 
 class Activity_Page_Users(models.Model):
     activity_page = models.ForeignKey(Activity_Page)

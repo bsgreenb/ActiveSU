@@ -52,17 +52,22 @@ def activity_page(request, activity_url):
 
     return render_to_response('activity_page.html', dict(activity_page_users = activity_page_users, all_posts = all_posts, future_events = future_event), context_instance=RequestContext(request))
 
-#TODO
 def submit_comment(request):
-    pass
+    if request.is_ajax() and request.method == 'POST':
+        results = []
+        form = CommentPostForm(request.POST) #TODO: Create this form
+        if form.is_valid():
+            try:
+            #TODO: When does a user become part of a page? Need to figure out the flow then CONTINYA
+            activity_page.join_if_not_a_
+        else:
+            results['status'] = 'invalid'
+            return SimpleJSON.dumps(results)
+        
+    else:
+        return Http404
 
 #TODO: Will take both text and event posts
-def submit_post(request):
-    pass
-
-
-
-
 def create_post(request, type):
     if request.method == 'POST':
         if type == 'message':
