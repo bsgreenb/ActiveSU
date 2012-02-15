@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Max, Count
 from django.contrib.auth.models import User
 
 #from django.db import connection #for debugging
@@ -9,14 +10,14 @@ from django.contrib.auth.models import User
 #Gets the activity pages, and the most recent activity post of each
 def get_main_page():
     #TODO: Gotta get this right per SO
-    return Activity_Page.objects.filter(enabled=True).annotate(Max('-post_time'),user_count = Count('users')).order_by('user_count')
+    return Activity_Page.objects.filter(enabled=True).annotate(Max('post__post_time'),user_count = Count('users')).order_by('user_count')
 
 class Activity_Page(models.Model):
     name = models.CharField(max_length=50)
     url_code = models.CharField(max_length=50) #This is the basis for the pretty url 
     created = models.DateTimeField(auto_now_add = True)
     enabled = models.BooleanField(default = True)
-    users = models.ManyToManyField(User, through='Activity_Page_Users')
+    users = models.ManyToManyField(User, through='Activity_Page_User')
 
     def __unicode__(self):
         return self.name
@@ -35,7 +36,7 @@ class Activity_Page(models.Model):
         """
         return Event_Post.objects.filter(post__activity_page=self).prefetch_related('comment_set').order_by('start_datetime', '-comment__comment_time')
 
-class Activity_Page_Users(models.Model):
+class Activity_Page_User(models.Model):
     activity_page = models.ForeignKey(Activity_Page)
     user = models.ForeignKey(User)
     join_time = models.DateTimeField(auto_now_add = True)

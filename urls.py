@@ -24,7 +24,7 @@ urlpatterns = patterns('',
     url(r'^/(\w+)$', views.activity_page, name="activity_page"),
 
 
-    url(r'^postmessage/$', views.create_post, {'type':'message'}, name="post_message"),
-    url(r'^postevent/$', views.create_post, {'type':'event'}, name="post_event"),
+    url(r'^postmessage/$', views.submit_post, {'type':'message'}, name="post_message"),
+    url(r'^postevent/$', views.submit_post, {'type':'event'}, name="post_event"),
 
 )
