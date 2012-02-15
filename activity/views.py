@@ -6,7 +6,7 @@ from django.contrib.auth import authenticate, login as auth_login, logout  #We w
 from django.contrib.auth.decorators import login_required
 
 
-from activity.forms import RegistrationForm
+from activity.forms import RegistrationForm, TextPostForm
 
 @login_required
 def logout_page(request):
@@ -40,5 +40,29 @@ def main_page(request):
 
 def activity_page(request):
     return render_to_response('activity_page.html', dict(), context_instance=RequestContext(request))
+
+
+
+
+
+def create_post(request, type):
+    if request.method == 'POST':
+        if type == 'message':
+            form = TextPostForm(request.POST)
+            if form.is_valid():
+                try:
+                    activity_page = Activity_Page.objects.get(pk = form.cleaned_data['activity_page'])
+                except Activity_Page.DoesNotExist:
+                    return Http404
+
+                new_post = Post.create(user = request.user, activity_page = activity_page)
+                Text_Post.create(post = new_post, content = form.cleaned_data['content'])
+
+                #TODO redirect to the right activity page
+
+                return HttpResponseRedirect('/')
+
+        elif type == 'event':
+            form =
 
 
