@@ -38,13 +38,19 @@ def main_page(request):
     activities = get_main_page()
     return render_to_response('main_page.html', dict(activities = activities), context_instance=RequestContext(request))
 
-#TODO: Definitely need no posts / no events / no users messages
+#TODO: Definitely need no posts / no events / no users message
+#TODO: Also need messages for not logged in users
 def activity_page(request, activity_url):
     try:
         activity_page = Activity_Page.get(url_code = activity_url)
     except DoesNotExist:
         return HttpResponseRedirect(reverse('main_page'))
 
+    #If they're logged in and not a user of this page, we want to make them a user
+    if request.user.is_authenticated():
+        Activity_Page_Users.get_or_create(user = request.user, activity_page = activity_page)
+
+    #Get users of this page
     activity_page_users = activity_page.user_set 
     
     # We want to get all the posts, with comments, ordered by their post date
@@ -55,18 +61,21 @@ def activity_page(request, activity_url):
 
     return render_to_response('activity_page.html', dict(activity_page_users = activity_page_users, all_posts = all_posts, future_events = future_event), context_instance=RequestContext(request))
 
+#Note: We currently assume that they're a member of the page, but in later versions we might have to think out a more complex system for joining and leaving of pages.
+@login_required
 def submit_comment(request):
     if request.is_ajax() and request.method == 'POST':
-        results = []
+        result = []
         form = CommentPostForm(request.POST) #TODO: Create this form
         if form.is_valid():
-            try:
-            #TODO: When does a user become part of a page? Need to figure out the flow then CONTINYA
-            activity_page.join_if_not_a_
+            post = form.cleaned_data['post']
+            content = form.cleaned_data['content']
+            Comment.create(user = request.user, post = post, content = content)
+            result['status'] = 'OK'
         else:
-            results['status'] = 'invalid'
-            return SimpleJSON.dumps(results)
-        
+            result['status'] = 'invalid'
+    
+        return SimpleJSON.dumps(results)
     else:
         return Http404
 
