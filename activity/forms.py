@@ -52,4 +52,4 @@ class EventPostForm(forms.Form):
     end_date = forms.DateTimeField(required = False)
     end_time = forms.TimeField(required = False)
     where = forms.CharField(max_length = 200)
-    description = forms.CharField(mex_length = 500)
+    description = forms.CharField(max_length = 500)

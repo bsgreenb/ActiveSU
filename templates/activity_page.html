@@ -8,32 +8,60 @@
 
 {% block js %}
     <script src="/static/js/plugin/bootstrap-datepicker.js"></script>
-<script>
-    /* Update datepicker plugin so that MM/DD/YYYY format is used. */
-    $.extend($.fn.datepicker.defaults, {
-        parse: function (string) {
-            var matches;
-            if ((matches = string.match(/^(\d{2,2})\/(\d{2,2})\/(\d{4,4})$/))) {
-                return new Date(matches[3], matches[1] - 1, matches[2]);
-            } else {
-                return null;
-            }
-        },
-        format: function (date) {
-            var
-                    month = (date.getMonth() + 1).toString(),
-                    dom = date.getDate().toString();
-            if (month.length === 1) {
-                month = "0" + month;
-            }
-            if (dom.length === 1) {
-                dom = "0" + dom;
-            }
-            return month + "/" + dom + "/" + date.getFullYear();
-        }
-    });
-</script>
-a{% endblock %}
+    <script src="http://api.jquery.com/scripts/events.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            /* Update datepicker plugin so that MM/DD/YYYY format is used. */
+            $.extend($.fn.datepicker.defaults, {
+                parse: function (string) {
+                    var matches;
+                    if ((matches = string.match(/^(\d{2,2})\/(\d{2,2})\/(\d{4,4})$/))) {
+                        return new Date(matches[3], matches[1] - 1, matches[2]);
+                    } else {
+                        return null;
+                    }
+                },
+                format: function (date) {
+                    var
+                            month = (date.getMonth() + 1).toString(),
+                            dom = date.getDate().toString();
+                    if (month.length === 1) {
+                        month = "0" + month;
+                    }
+                    if (dom.length === 1) {
+                        dom = "0" + dom;
+                    }
+                    return month + "/" + dom + "/" + date.getFullYear();
+                }
+            });
+
+            $('#post-message').keypress(function(event) {
+                var keycode = (event.keyCode ? event.keyCode : event.which);
+                if(keycode == 13){
+                    $.post('/postmessage/',{
+                        csrfmiddlewaretoken: '{{ csrf_token }}',
+                        activity_page: $('#activity-page').val(),
+                        content: $(this).val()
+                    },
+                    function(response){
+                        if (response['status'] == 'OK')
+                        {
+                            var html = '<div class="post"><b>{{ user.first_name }} {{ user.last_name }}: </b>' + $(this).val() + '</div>';
+                            $('.posts').prepend(html);
+                            $(this).val('');
+                        }
+                        else
+                        {
+                            $('#post-message-error').html(response['status']).show();
+                        }
+                    }, "json");
+                }
+            });
+        });
+
+    </script>
+{% endblock %}
 
 
 {% block css %}
@@ -50,12 +78,10 @@ a{% endblock %}
 
 {% block content %}
     <div class="row">
-        
-
         <div class="span9">
             <div class="content">
                 <div class="head">
-                    <a href="#" class="name">Tennis</a>
+                    <a href="#" class="name">Tennis</a><input type="hidden" id="activity-page" value="1" />
                     <span class="active-info">200 posts | 200 active members</span>
                 </div>
 
@@ -72,56 +98,73 @@ a{% endblock %}
 
                     <div class="tab-content">
                         <div class="tab-pane active" id="1">
-                        <input class="input-xlarge post-message" placeholder="post..."/>
+                            <div class="alert alert-error" id="post-message-error" style="display:none"></div>
+                            {% if not user.is_authenticated %}
+                                <input class="input-xlarge post-message disabled" disabled="" placeholder="Please login or sign up to write a message."/>
+                            {% else %}
+                                <input class="input-xlarge post-message" placeholder="Write a message..." id="post-message"/>
+                            {% endif %}
                         </div>
 
 
                         <div class="tab-pane" id="2">
 
-                            <form class="form-horizontal" method="POST" action="">
-
-
+                            <form class="form-horizontal">
+                                <div class="alert alert-error" id="post-event-error" style="display:none"></div>
                                 <div class="control-group">
                                     <label class="control-label">Location </label>
                                     <div class="controls">
-                                        <input class="input-large" type="text" value="" />
+                                        {% if not user.authenticated %}
+                                            <input class="input-large disabled" type="text" value="" disabled=""/>
+                                        {% else %}
+                                            <input class="input-large" type="text" value="" />
+                                        {% endif %}
                                     </div>
                                 </div>
 
                                 <div class="control-group">
                                     <label class="control-label">Start </label>
                                     <div class="controls">
-                                        <input data-datepicker="datepicker" class="input-medium" type="text" value="" /> <select class="span1"><option>Time</option></select>
+                                        {% if not user.authenticated %}
+                                            <input data-datepicker="datepicker" class="input-medium disabled" type="text" value="" disabled=""/> <select class="span1 disabled" disabled=""><option>Time</option></select>
+                                        {% else %}
+                                            <input data-datepicker="datepicker" class="input-medium" type="text" value=""/> <select class="span1 disabled" disabled=""><option>Time</option></select>
+                                        {% endif %}
                                     </div>
                                 </div>
 
                                 <div class="control-group">
                                     <label class="control-label">End (optional) </label>
                                     <div class="controls">
-                                        <input data-datepicker="datepicker" class="input-medium" type="text" value="" /> <select class="span1"><option>Time</option></select>
+                                        {% if not user.authenticated %}
+                                        <input data-datepicker="datepicker" class="input-medium disabled" type="text" value="" disabled=""/> <select class="span1 disabled" disabled=""><option>Time</option></select>
+                                        {% else %}
+                                        <input data-datepicker="datepicker" class="input-medium" type="text" value=""/> <select class="span1 disabled" disabled=""><option>Time</option></select>
+                                        {% endif %}
                                     </div>
                                 </div>
 
                                 <div class="control-group">
                                     <label class="control-label">Description </label>
                                     <div class="controls">
-                                        <textarea class="input-large" rows="2"></textarea>
+                                        {% if not user.authenticated %}
+                                            <textarea class="input-large disabled" rows="2" disabled=""></textarea>
+                                        {% else %}
+                                            <textarea class="input-large" rows="2" ></textarea>
+                                        {% endif %}
                                     </div>
                                 </div>
 
                                 <div class="control-group">
                                     <label class="control-label"></label>
                                     <div class="controls">
-                                        <button class="btn btn-success">Create Event</button>
+                                        {% if not user.is_authenticated %}
+                                            <button class="btn btn-success disabled" disabled="">Create Event</button>
+                                        {% else %}
+                                            <button class="btn btn-success">Create Event</button>
+                                        {% endif %}
                                     </div>
                                 </div>
-
-
-
-
-
-
-
                             </form>
                         </div>
                     </div>
@@ -142,7 +185,11 @@ a{% endblock %}
                             <div><b>Dong Jon: </b>let's meet at 7pm to play tennis.</div>
 
                             <div>
-                                <input class="input-large comment" placeholder="Write a comment...">
+                                {% if not user.is_authenticated %}
+                                    <input class="input-large comment disabled" placeholder="Write a comment..." disabled="">
+                                {% else %}
+                                    <input class="input-large comment" placeholder="Write a comment...">
+                                {% endif %}
                             </div>
                         </div>
 
@@ -215,8 +262,6 @@ a{% endblock %}
             </div>
         </div>
     </div>
-
-
 {% endblock %}
 
 

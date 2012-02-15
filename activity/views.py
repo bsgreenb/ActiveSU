@@ -7,6 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.utils import simplejson
 from django.db import transaction
 
+from activity.models import *
 from activity.forms import RegistrationForm, TextPostForm
 
 @login_required
@@ -70,20 +71,30 @@ def create_post(request, type):
             if form.is_valid():
                 activity_page = check_activity_page(form.cleaned_data['activity_page'])
                 with transaction.commit_on_success():
-                    new_post = Post.create(user = request.user, activity_page = activity_page)
-                    Text_Post.create(post = new_post, content = form.cleaned_data['content'])
+                    new_post = Post(user = request.user, activity_page = activity_page)
+                    new_post.save()
+
+                    new_text_post = Text_Post(post = new_post, content = form.cleaned_data['content'])
+                    new_text_post.save()
 
                 results = {
                     'status':'OK'
                 }
                 return HttpResponse(simplejson.dumps(results), 'application/javascript')
+            else:
+                results = {
+                    'stauts':'invalid post.'
+                }
+                return HttpResponse(simplejson.dumps(results), 'application/javascript')
+
 
         elif type == 'event':
             form = EventPostForm(request.POST)
             if form.is_valid():
                 activity_page = check_activity_page(form.cleaned_data['activity_page'])
                 with transaction.commit_on_success():
-                    new_post = Post.create(user = request.user, activity_page = activity_page)
+                    new_post = Post(user = request.user, activity_page = activity_page)
+                    new_post.save()
 
                     #TODO how to add those two times
                     start_datetime = form.cleaned_data['start_date'] + form.cleaned_data['start_time']
@@ -105,6 +116,17 @@ def create_post(request, type):
                     'status':'OK'
                 }
                 return HttpResponse(simplejson.dumps(results), 'application/javascript')
+
+            else:
+                results = {
+                    'status':'error',
+                    'data':form.errors
+                }
+                return HttpResponse(simplejson.dumps(results), 'application/javascript')
+    else:
+        return HttpResponse(simplejson.dumps({'status':'invalid request'}))
+
+
 
 
 

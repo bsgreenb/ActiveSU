@@ -27,7 +27,7 @@ urlpatterns = patterns('',
 
 
 
-    (r'^postmessage/$', views.create_post, {'type':'message'}),
-    (r'^postevent/$', views.create_post, {'type':'event'}),
+    url(r'^postmessage/$', views.create_post, {'type':'message'}, name="post-message"),
+    url(r'^postevent/$', views.create_post, {'type':'event'}, name="post-event"),
 
 )
