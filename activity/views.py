@@ -8,3 +8,4 @@ from django.contrib.auth.decorators import login_required
 def main_page(request):
     return render_to_response('main_page.html', dict(), context_instance=RequestContext(request))
 
+
