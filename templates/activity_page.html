@@ -118,16 +118,16 @@
                             <form class="form-horizontal" method="POST" action="{% url post_event %}">
                                 {% csrf_token %}
                                 {% if event_form_with_error %}
-                                <div class="alert alert-error">
-                                    <a href="close" href="#">x</a>
-                                    <ul>
-                                        {% for field in event_form_with_error %}
-                                            {% if field.errors %}
-                                                <li>{{field.errors|striptags }}</li>
-                                            {% endif %}
-                                        {% endfor %}
-                                    </ul>
-                                </div>
+                                    <div class="alert alert-error">
+                                        <a href="close" href="#">x</a>
+                                        <ul>
+                                            {% for field in event_form_with_error %}
+                                                {% if field.errors %}
+                                                    <li>{{field.errors|striptags }}</li>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
                                 {% endif %}
 
                                 <div class="control-group">
