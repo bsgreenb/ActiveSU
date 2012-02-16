@@ -62,7 +62,7 @@ class Event_Post(models.Model):
     description = models.CharField(max_length=300,null=True,blank=True)
 
     def __unicode__(self):
-        return self.post + ':' + self.where + ' @ ' + self.when
+        return unicode(self.post) + ':' + self.where
 
 class Comment(models.Model):
     user = models.ForeignKey(User)

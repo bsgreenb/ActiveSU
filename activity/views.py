@@ -1,3 +1,5 @@
+import datetime
+
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.http import HttpResponse, HttpResponseRedirect, Http404
@@ -8,7 +10,7 @@ from django.utils import simplejson
 from django.db import transaction
 
 from activity.models import *
-from activity.forms import RegistrationForm, TextPostForm
+from activity.forms import RegistrationForm, TextPostForm, EventPostForm
 
 @login_required
 def logout_page(request):
@@ -74,7 +76,7 @@ def activity_page(request, activity_url):
     else:
         event_form_with_error = ''
 
-    return render_to_response('activity_page.html', dict(activity_page_users = activity_page_users, all_posts = all_posts, future_events = future_events, message_form_with_error = message_form_with_error, event_form_with_error = event_form_with_error), context_instance=RequestContext(request))
+    return render_to_response('activity_page.html', dict(activity_page = activity_page, activity_page_users = activity_page_users, all_posts = all_posts, future_events = future_events, message_form_with_error = message_form_with_error, event_form_with_error = event_form_with_error), context_instance=RequestContext(request))
 
 #Note: We currently assume that they're a member of the page, but in later versions we might have to think out a more complex system for joining and leaving of pages.
 @login_required
@@ -90,7 +92,7 @@ def submit_comment(request):
         else:
             result['status'] = 'invalid'
     
-        return SimpleJSON.dumps(results)
+        return HttpResponse(simplejson.dumps(results))
     else:
         return Http404
 
@@ -99,19 +101,15 @@ def submit_comment(request):
 @login_required
 def submit_post(request, type):
 
-    def check_activity_page(page_number):
+    if request.method == 'POST':
         try:
-            activity_page = Activity_Page.objects.get(pk = page_number)
+            activity_page = Activity_Page.objects.get(pk = request.POST['activity_page'])
         except Activity_Page.DoesNotExist:
             return Http404
-        else:
-            return activity_page
 
-    if request.method == 'POST':
         if type == 'message':
             form = TextPostForm(request.POST)
             if form.is_valid():
-                activity_page = check_activity_page(form.cleaned_data['activity_page'])
                 with transaction.commit_on_success():
                     new_post = Post(user = request.user, activity_page = activity_page)
                     new_post.save()
@@ -126,21 +124,22 @@ def submit_post(request, type):
         elif type == 'event':
             form = EventPostForm(request.POST)
             if form.is_valid():
-                activity_page = check_activity_page(form.cleaned_data['activity_page'])
                 with transaction.commit_on_success():
                     new_post = Post(user = request.user, activity_page = activity_page)
                     new_post.save()
 
                     #TODO how to add those two times
-                    start_datetime = form.cleaned_data['start_date'] + form.cleaned_data['start_time']
+
+                    start_datetime = form.cleaned_data['start_date'] + datetime.timedelta(minutes = form.cleaned_data['start_time'])
 
                     if form.cleaned_data.get('end_date', '') and form.cleaned_data.get('end_time', ''):
-                        end_datetime = form.cleaned_data['end_date'] + form.cleaned_data['end_time']
+                        end_datetime = form.cleaned_data['end_date'] + datetime.timedelta(minutes = form.cleaned_data['end_time'])
                     else:
-                        end_datetime = ''
+                        end_datetime = None
 
                     new_event_post = Event_Post(
                         post = new_post,
+                        title = form.cleaned_data['title'],
                         where = form.cleaned_data['where'],
                         start_datetime = start_datetime,
                         end_datetime = end_datetime,
@@ -148,6 +147,7 @@ def submit_post(request, type):
                     )
                     new_event_post.save()
             else:
+
                 request.session['event_form_with_error'] = form
 
             return HttpResponseRedirect(reverse('activity_page', args=[activity_page.url_code]))

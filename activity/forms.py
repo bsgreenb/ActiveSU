@@ -45,9 +45,10 @@ class TextPostForm(forms.Form):
     activity_page = forms.IntegerField(min_value=1)
 
 class EventPostForm(forms.Form):
+    title = forms.CharField(max_length=100)
     start_date = forms.DateTimeField()
-    start_time = forms.TimeField()
+    start_time = forms.IntegerField()
     end_date = forms.DateTimeField(required = False)
-    end_time = forms.TimeField(required = False)
+    end_time = forms.IntegerField(required = False)
     where = forms.CharField(max_length = 200)
-    description = forms.CharField(max_length = 500)
+    description = forms.CharField(max_length = 500, required=False)
