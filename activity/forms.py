@@ -14,19 +14,17 @@ from bootstrap.forms import BootstrapForm, Fieldset
 class RegistrationForm(BootstrapForm):
     class Meta:
         layout = {
-            Fieldset('Register', 'email', 'first_name', 'last_name', 'password1', 'password2')
+            Fieldset('Register', 'email', 'password1', 'password2')
         }
 
     # we use prefix of the email as username
     email = forms.EmailField(label=u'School Email', error_messages={'required':'a', 'invalid':''})
-    first_name = forms.CharField(label=u'First Name', max_length = 30, error_messages={'required':'b', 'invalid':''})
-    last_name = forms.CharField(label=u'Last Name', max_length = 30, error_messages={'required':'c', 'invalid':''})
     password1 = forms.CharField(label=u'Password', widget=forms.PasswordInput(), error_messages={'required':'d', 'invalid':''})
     password2 = forms.CharField(label=u'Confirm Password', widget=forms.PasswordInput(), error_messages={'required':'e', 'invalid':''})
 
     def clean_email(self):
         school_email_suffix = self.cleaned_data['email'].split('@')[-1]
-        if school_email_suffix == 'stanford':
+        if school_email_suffix == 'stanford.edu':
             return self.cleaned_data['email']
         raise forms.ValidationError('Please provide your stanford email address.')
 

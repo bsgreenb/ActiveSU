@@ -20,12 +20,12 @@ def register_page(request):
         form = RegistrationForm(request.POST)
         if form.is_valid():
             User.objects.create_user(
-                username = form.cleaned_data['email'].split['@'][0], #email prefix
+                username = form.cleaned_data['email'].split('@')[0], #email prefix
                 password = form.cleaned_data['password1'],
                 email = form.cleaned_data['email']
             )
 
-            new_user = authenticate(username = request.POST['username'], password=request.POST['password1'])
+            new_user = authenticate(username = request.POST['email'], password=request.POST['password1'])
             auth_login(request, new_user)
             return HttpResponseRedirect(reverse('main_page'))
     else:
@@ -35,17 +35,26 @@ def register_page(request):
 
 #TODO: update the template once I figure this one out
 def main_page(request):
-    activities = get_main_page()
+    #TODO: Gotta get this right per SO
+    #TODO: http://stackoverflow.com/questions/6194589/django-create-filter-for-nice-time
+    activities = Activity_Page.objects.filter(enabled=True).annotate(Max('post__post_time'),user_count = Count('users')).select_related().order_by('-user_count') #Gets the activity pages, and the most recent activity post of each
+    
     return render_to_response('main_page.html', dict(activities = activities), context_instance=RequestContext(request))
 
-#TODO: Definitely need no posts / no events / no users messages
+#TODO: Definitely need no posts / no events / no users message
+#TODO: Also need messages for not logged in users
 def activity_page(request, activity_url):
     try:
-        activity_page = Activity_Page.get(url_code = activity_url)
+        activity_page = Activity_Page.objects.get(url_code = activity_url)
     except Activity_Page.DoesNotExist:
         return HttpResponseRedirect(reverse('main_page'))
 
-    activity_page_users = activity_page.user_set 
+    #If they're logged in and not a user of this page, we want to make them a user
+    if request.user.is_authenticated():
+        Activity_Page_User.objects.get_or_create(user = request.user, activity_page = activity_page)
+
+    #Get users of this page
+    activity_page_users = activity_page.users 
     
     # We want to get all the posts, with comments, ordered by their post date
     all_posts = activity_page.get_posts_and_comments()
@@ -53,13 +62,13 @@ def activity_page(request, activity_url):
     # We want to get future events, ordered by their occuring date
     future_events = activity_page.get_future_events_and_comments()
 
-    if not request.session.get('form_with_error', ''):
+    if request.session.get('message_form_with_error', ''):
         message_form_with_error = request.session['message_form_with_error']
         del request.session['message_form_with_error']
     else:
         message_form_with_error = ''
 
-    if not request.session.get('event_form_with_error', ''):
+    if request.session.get('event_form_with_error', ''):
         event_form_with_error = request.session['event_form_with_error']
         del request.session['event_form_with_error']
     else:
@@ -67,18 +76,28 @@ def activity_page(request, activity_url):
 
     return render_to_response('activity_page.html', dict(activity_page_users = activity_page_users, all_posts = all_posts, future_events = future_events, message_form_with_error = message_form_with_error, event_form_with_error = event_form_with_error), context_instance=RequestContext(request))
 
-#TODO
-def submit_comment(request):
-    pass
-
-#TODO: Will take both text and event posts
-def submit_post(request):
-    pass
-
-
-
+#Note: We currently assume that they're a member of the page, but in later versions we might have to think out a more complex system for joining and leaving of pages.
 @login_required
-def create_post(request, type):
+def submit_comment(request):
+    if request.is_ajax() and request.method == 'POST':
+        result = []
+        form = CommentPostForm(request.POST) #TODO: Create this form
+        if form.is_valid():
+            post = form.cleaned_data['post']
+            content = form.cleaned_data['content']
+            Comment.create(user = request.user, post = post, content = content)
+            result['status'] = 'OK'
+        else:
+            result['status'] = 'invalid'
+    
+        return SimpleJSON.dumps(results)
+    else:
+        return Http404
+
+#TODO: Possibly split into two.. qstn: model form issues?
+#TODO: Will take both text and event posts
+@login_required
+def submit_post(request, type):
 
     def check_activity_page(page_number):
         try:

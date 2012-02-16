@@ -128,6 +128,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django_activity.activity',
     'django.contrib.admin', # admin page
+    'django.contrib.humanize',
     'south',
     'bootstrap',
 )
