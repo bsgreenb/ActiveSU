@@ -66,7 +66,7 @@ class Event_Post(models.Model):
     where = models.CharField(max_length=200)
     start_datetime = models.DateTimeField()
     end_datetime = models.DateTimeField(null = True, blank = True)
-    description = models.CharField(max_length=300)
+    description = models.CharField(max_length=300,null=True,blank=True)
 
     def __unicode__(self):
         return self.post + ':' + self.where + ' @ ' + self.when
