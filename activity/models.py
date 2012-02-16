@@ -62,10 +62,11 @@ class Text_Post(models.Model):
 
 class Event_Post(models.Model):
     post = models.OneToOneField(Post)
+    title = models.CharField(max_length=100)
     where = models.CharField(max_length=200)
     start_datetime = models.DateTimeField()
     end_datetime = models.DateTimeField(null = True, blank = True)
-    description = models.CharField(max_length=500)
+    description = models.CharField(max_length=300)
 
     def __unicode__(self):
         return self.post + ':' + self.where + ' @ ' + self.when
