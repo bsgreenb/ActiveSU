@@ -1,5 +1,3 @@
-{% load humanize %}
-
 {% extends 'backbone/base.html' %}
 
 {% block css-link %}
@@ -36,11 +34,12 @@
                         {%else%}
                         {{activity.post.content}}
                         {%endif%}
-                        <span class="post-end"> | {{activity.post.post_time|naturaltime}}</span>
+                        <span class="post-end"> | {{activity.post.post_time}}</span>
                     </div>
                 </div>
                 {%endif%}
              </div>
+        {%endfor%}
         </div>
     </div>
 {% endblock %}

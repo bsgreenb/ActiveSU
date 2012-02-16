@@ -36,7 +36,8 @@ def register_page(request):
 #TODO: update the template once I figure this one out
 def main_page(request):
     #TODO: Gotta get this right per SO
-    activities = Activity_Page.objects.filter(enabled=True).annotate(Max('post__post_time'),user_count = Count('users')).select_related().order_by('user_count') #Gets the activity pages, and the most recent activity post of each
+    #TODO: http://stackoverflow.com/questions/6194589/django-create-filter-for-nice-time
+    activities = Activity_Page.objects.filter(enabled=True).annotate(Max('post__post_time'),user_count = Count('users')).select_related().order_by('-user_count') #Gets the activity pages, and the most recent activity post of each
     
     return render_to_response('main_page.html', dict(activities = activities), context_instance=RequestContext(request))
 

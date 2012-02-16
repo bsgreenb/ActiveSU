@@ -43,17 +43,14 @@ class Post(models.Model):
     post_time = models.DateTimeField(auto_now_add = True)
 
     def __unicode__(self):
-        return 'Post by ' + self.user + ' on ' + self.activity_page + ' at ' + self.post_time
+        return 'Post by ' + unicode(self.user) + ' on ' + unicode(self.activity_page) + ' at ' + str(self.post_time)
 
 class Text_Post(models.Model):
     post = models.OneToOneField(Post)
     content = models.CharField(max_length=500)
 
     def __unicode__(self):
-        if self.target:
-            return self.post + ' (at ' + self.target + '): ' + self.content
-        else:
-            return self.post + ':' + self.content
+        return unicode(self.post) + ':' + self.content
 
 class Event_Post(models.Model):
     post = models.OneToOneField(Post)

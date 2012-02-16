@@ -21,7 +21,7 @@ urlpatterns = patterns('',
 
     # core
     url(r'^$', views.main_page, name="main_page"),
-    url(r'^/(\w+)$', views.activity_page, name="activity_page"),
+    url(r'^(\w+)$', views.activity_page, name="activity_page"),
 
 
     url(r'^postmessage/$', views.submit_post, {'type':'message'}, name="post_message"),
