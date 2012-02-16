@@ -71,8 +71,8 @@
         <div class="span9">
             <div class="content">
                 <div class="head">
-                    <a href="#" class="name">Tennis</a>
-                    <span class="active-info">200 posts | 200 active members</span>
+                    <a href="#" class="name">{{activity_page.name}}</a>
+                    <!-- <span class="active-info">N posts | N active members</span> -->
                 </div>
 
                 <div class="tabbable">
@@ -187,25 +187,39 @@
                             </form>
                         </div>
                     </div>
-
-
                 </div>
 
                 <div class="posts">
+                    {%if not all_posts %}
+                    There are currently no posts on this page.  You can be the first to add one!
+                    {%else%}
+                    {%for post in all_posts %}
                     <div class="post">
-                        <b>rui xia: </b> I'd like to play basketball with someone wednesday night at court. Meet me at stanford university ave.
+                        
+                        <b>{{post.user.username}}: </b>
+                        {%if post.content %}
+                        {{post.content}}
+                        {%else%}
+                        {%if post.title%}
+                        <i class="icon-calendar"></i><b>Event</b>
+                        <h5>{{post.title}}</h5>
+                        <h5>When: {{post.start_datetime}} - {{post.end_datetime}}</h5>
+                        <h5>Location: {{post.where}}</h5>
+                        {{post.description}}
+                        {%endif%}
+                        {%endif%}
                         <span class="post-end">
-                            | 15 hours ago
+                            | {{post.post_time}}
                         </span>
-
                         <div class="comments">
-                            <div><a href="#"><i class="icon-comment"></i> View all 10 comments</a></div>
-                            <div><b>Dong Jon: </b>let's meet at 7pm to play tennis.</div>
-                            <div><b>Dong Jon: </b>let's meet at 7pm to play tennis.</div>
-
+                            {% if post.comments %}
+                            {%for comment in comments %}
+                            <div><b>{{comment.user.username}}: </b>{{comment.content}} | {{comment.comment_time}}</div>
+                            {%endfor%}
+                            {%endif%}
                             <div>
                                 {% if not user.is_authenticated %}
-                                    <input class="input-large comment disabled" placeholder="Write a comment..." disabled="">
+                                    <input class="input-large comment disabled" placeholder="Register/login to write a comment" disabled="">
                                 {% else %}
                                     <input class="input-large comment" placeholder="Write a comment...">
                                 {% endif %}
@@ -213,70 +227,8 @@
                         </div>
 
                     </div>
-
-
-
-
-
-                    <div class="post">
-                        <b>rui xia: </b> I'd like to play basketball with someone wednesday night at court. Meet me at stanford university ave.
-                        <span class="post-end">
-                            | 15 hours ago
-                        </span>
-
-                        <div class="comments">
-                            <div><a href="#"><i class="icon-comment"></i> View all 10 comments</a></div>
-                            <div><b>Dong Jon: </b>let's meet at 7pm to play tennis.</div>
-                            <div><b>Dong Jon: </b>let's meet at 7pm to play tennis.</div>
-
-                            <div>
-                                <input class="input-large comment" placeholder="Write a comment...">
-                            </div>
-                        </div>
-
-                    </div>
-
-
-                    <div class="post">
-                        <i class="icon-calendar"></i><b>Event</b>
-                        <h5>Date: Wednesday 2/15/2011</h5>
-                        <h5>Show Up Time: 7pm</h5>
-                        <h5>Location: tennis court</h5>
-                        <h5>Number of People Attend: 80</h5>
-                        we are going to meet at bar bar bar bar bar to play tennis. show up at bar bar bar bar bar bar fdsfdsf dsfds fsdfds dsfds
-                        <span class="post-end">
-                            | 15 hours ago
-                        </span>
-
-                        <div class="comments">
-                            <div><a href="#"><i class="icon-comment"></i> View all 10 comments</a></div>
-                            <div><b>Dong Jon: </b>let's meet at 7pm to play tennis.</div>
-                            <div><b>Dong Jon: </b>let's meet at 7pm to play tennis.</div>
-
-                            <div>
-                                <input class="input-large comment" placeholder="Write a comment...">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="post">
-                        <b>rui xia: </b> I'd like to play basketball with someone wednesday night at court. Meet me at stanford university ave.
-                        <span class="post-end">
-                            | 15 hours ago
-                        </span>
-
-                        <div class="comments">
-                            <div><a href="#"><i class="icon-comment"></i> View all 10 comments</a></div>
-                            <div><b>Dong Jon: </b>let's meet at 7pm to play tennis.</div>
-                            <div><b>Dong Jon: </b>let's meet at 7pm to play tennis.</div>
-
-                            <div>
-                                <input class="input-large comment" placeholder="Write a comment...">
-                            </div>
-                        </div>
-
-                    </div>
-
+                    {%endfor%}
+                    {%endif%}
                 </div>
             </div>
         </div>
