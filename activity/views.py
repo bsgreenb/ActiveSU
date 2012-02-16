@@ -20,12 +20,12 @@ def register_page(request):
         form = RegistrationForm(request.POST)
         if form.is_valid():
             User.objects.create_user(
-                username = form.cleaned_data['email'].split['@'][0], #email prefix
+                username = form.cleaned_data['email'].split('@')[0], #email prefix
                 password = form.cleaned_data['password1'],
                 email = form.cleaned_data['email']
             )
 
-            new_user = authenticate(username = request.POST['username'], password=request.POST['password1'])
+            new_user = authenticate(username = request.POST['email'], password=request.POST['password1'])
             auth_login(request, new_user)
             return HttpResponseRedirect(reverse('main_page'))
     else:
@@ -45,16 +45,16 @@ def main_page(request):
 #TODO: Also need messages for not logged in users
 def activity_page(request, activity_url):
     try:
-        activity_page = Activity_Page.get(url_code = activity_url)
+        activity_page = Activity_Page.objects.get(url_code = activity_url)
     except Activity_Page.DoesNotExist:
         return HttpResponseRedirect(reverse('main_page'))
 
     #If they're logged in and not a user of this page, we want to make them a user
     if request.user.is_authenticated():
-        Activity_Page_Users.get_or_create(user = request.user, activity_page = activity_page)
+        Activity_Page_User.objects.get_or_create(user = request.user, activity_page = activity_page)
 
     #Get users of this page
-    activity_page_users = activity_page.user_set 
+    activity_page_users = activity_page.users 
     
     # We want to get all the posts, with comments, ordered by their post date
     all_posts = activity_page.get_posts_and_comments()
@@ -62,13 +62,13 @@ def activity_page(request, activity_url):
     # We want to get future events, ordered by their occuring date
     future_events = activity_page.get_future_events_and_comments()
 
-    if not request.session.get('form_with_error', ''):
+    if request.session.get('message_form_with_error', ''):
         message_form_with_error = request.session['message_form_with_error']
         del request.session['message_form_with_error']
     else:
         message_form_with_error = ''
 
-    if not request.session.get('event_form_with_error', ''):
+    if request.session.get('event_form_with_error', ''):
         event_form_with_error = request.session['event_form_with_error']
         del request.session['event_form_with_error']
     else:

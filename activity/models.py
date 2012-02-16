@@ -22,14 +22,15 @@ class Activity_Page(models.Model):
         Get all posts (and comments on them) for the activity page, ordered by when they were posted.
         """
         #TODO: Same issue as above, not sure I'm doing this right..
-        return Post.objects.filter(activity_page=self).select_related().prefetch_related('comment_set').order_by('-post_time', '-comment__comment_time')
+        return Post.objects.filter(activity_page=self).select_related().order_by('-post_time', '-comment__comment_time')
  
 
     def get_future_events_and_comments(self):
         """
         Gets all future events for the activity page, ordered by when the event will happen, not when it was posted. Also gets the comments for those events
         """
-        return Event_Post.objects.filter(post__activity_page=self).prefetch_related('comment_set').order_by('start_datetime', '-comment__comment_time')
+        #TODO: This is proly wrong
+        return Event_Post.objects.filter(post__activity_page=self).order_by('start_datetime', '-comment__comment_time')
 
 class Activity_Page_User(models.Model):
     activity_page = models.ForeignKey(Activity_Page)

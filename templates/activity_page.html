@@ -87,8 +87,18 @@
 
                         <div class="tab-pane active" id="1">
                             <form method="POST" action="{% url post_message %}" id="post-message-form">
+                                {% csrf_token %}
                                 {% if message_form_with_error %}
-                                    {% includes 'backbone/form_errors.html' %}
+                                    <div class="alert alert-error">
+                                        <a class="close" href="#">x</a>
+                                        <ul>
+                                            {% for field in message_form_with_error %}
+                                                {% if field.errors %}
+                                                    <li>{{ field.errors|striptags }}</li>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
                                 {% endif %}
 
                                 {% if not user.is_authenticated %}
@@ -103,14 +113,24 @@
                         <div class="tab-pane" id="2">
 
                             <form class="form-horizontal" method="POST" action="{% url post_event %}">
+                                {% csrf_token %}
                                 {% if event_form_with_error %}
-                                    {% includes 'backbone/form_errors.html' %}
+                                <div class="alert alert-error">
+                                    <a href="close" href="#">x</a>
+                                    <ul>
+                                        {% for field in event_form_with_error %}
+                                            {% if field.errors %}
+                                                <li>{{field.errors|striptags }}</li>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </ul>
+                                </div>
                                 {% endif %}
 
                                 <div class="control-group">
                                     <label class="control-label">Where </label>
                                     <div class="controls">
-                                        {% if not user.authenticated %}
+                                        {% if not user.is_authenticated %}
                                             <input class="input-large disabled" type="text" value="" disabled=""/>
                                         {% else %}
                                             <input class="input-large" type="text" value="" name="where"/>
@@ -121,10 +141,10 @@
                                 <div class="control-group">
                                     <label class="control-label">Start </label>
                                     <div class="controls">
-                                        {% if not user.authenticated %}
+                                        {% if not user.is_authenticated %}
                                             <input data-datepicker="datepicker" class="input-medium disabled" type="text" value="" disabled=""/> <select class="span1 disabled" disabled=""><option>Time</option></select>
                                         {% else %}
-                                            <input data-datepicker="datepicker" class="input-medium" type="text" value="" name="start_date"/> <select class="span1 disabled" disabled="" name="start_time"><option>Time</option></select>
+                                            <input data-datepicker="datepicker" class="input-medium" type="text" value="" name="start_date"/> <select class="span1" name="start_time"><option>Time</option></select>
                                         {% endif %}
                                     </div>
                                 </div>
@@ -132,10 +152,10 @@
                                 <div class="control-group">
                                     <label class="control-label">End (optional) </label>
                                     <div class="controls">
-                                        {% if not user.authenticated %}
+                                        {% if not user.is_authenticated %}
                                         <input data-datepicker="datepicker" class="input-medium disabled" type="text" value="" disabled=""/> <select class="span1 disabled" disabled=""><option>Time</option></select>
                                         {% else %}
-                                        <input data-datepicker="datepicker" class="input-medium" type="text" value="" name="end_date"/> <select class="span1 disabled" disabled="" name="end_time"><option>Time</option></select>
+                                        <input data-datepicker="datepicker" class="input-medium" type="text" value="" name="end_date"/> <select class="span1" name="end_time"><option>Time</option></select>
                                         {% endif %}
                                     </div>
                                 </div>
@@ -143,7 +163,7 @@
                                 <div class="control-group">
                                     <label class="control-label">Description </label>
                                     <div class="controls">
-                                        {% if not user.authenticated %}
+                                        {% if not user.is_authenticated %}
                                             <textarea class="input-large disabled" rows="2" disabled=""></textarea>
                                         {% else %}
                                             <textarea name="description" class="input-large" rows="2" ></textarea>
