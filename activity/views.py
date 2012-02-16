@@ -54,7 +54,7 @@ def activity_page(request, activity_url):
         Activity_Page_User.objects.get_or_create(user = request.user, activity_page = activity_page)
 
     #Get users of this page
-    activity_page_users = activity_page.users 
+    activity_page_users = activity_page.users
     
     # We want to get all the posts, with comments, ordered by their post date
     all_posts = activity_page.get_posts_and_comments()

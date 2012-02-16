@@ -17,6 +17,8 @@ urlpatterns = patterns('',
     url(r'^accounts/login/$', anonymous_required(login), name="login"),
     url(r'^register/$', anonymous_required(views.register_page, '/'), name="register"),
     url(r'^logout/$', views.logout_page, name="logout"),
+    (r'^password/change/$', password_change),
+    (r'^password/change/done$', password_change_done),
 
     # change password
     url(r'^password/change/$', password_change),
