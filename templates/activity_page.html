@@ -8,10 +8,15 @@
 
 {% block js %}
     <script src="/static/js/plugin/bootstrap-datepicker.js"></script>
-    <script src="http://api.jquery.com/scripts/events.js"></script>
+    <script src="/static/js/plugin/events.js"></script>
 
     <script>
         $(document).ready(function() {
+            $('a.close').live('click',function() {
+                $(this).parent('div.alert').remove();
+            });
+
+
             /* Update datepicker plugin so that MM/DD/YYYY format is used. */
             $.extend($.fn.datepicker.defaults, {
                 parse: function (string) {
@@ -43,8 +48,6 @@
                     $('#post-message-form').submit();
                 }
             });
-
-            
         });
 
     </script>
