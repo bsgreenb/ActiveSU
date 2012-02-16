@@ -7,11 +7,6 @@ from django.contrib.auth.models import User
 #Hmm lets see.  We want to get the Activity_Page LEFT JOIN (Post 
 #
 
-#Gets the activity pages, and the most recent activity post of each
-def get_main_page():
-    #TODO: Gotta get this right per SO
-    return Activity_Page.objects.filter(enabled=True).annotate(Max('post__post_time'),user_count = Count('users')).order_by('user_count')
-
 class Activity_Page(models.Model):
     name = models.CharField(max_length=50)
     url_code = models.CharField(max_length=50) #This is the basis for the pretty url 

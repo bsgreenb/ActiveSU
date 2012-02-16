@@ -35,7 +35,9 @@ def register_page(request):
 
 #TODO: update the template once I figure this one out
 def main_page(request):
-    activities = get_main_page()
+    #TODO: Gotta get this right per SO
+    activities = Activity_Page.objects.filter(enabled=True).annotate(Max('post__post_time'),user_count = Count('users')).select_related().order_by('user_count') #Gets the activity pages, and the most recent activity post of each
+    
     return render_to_response('main_page.html', dict(activities = activities), context_instance=RequestContext(request))
 
 #TODO: Definitely need no posts / no events / no users message
@@ -91,6 +93,7 @@ def submit_comment(request):
     else:
         return Http404
 
+#TODO: Possibly split into two.. qstn: model form issues?
 #TODO: Will take both text and event posts
 @login_required
 def submit_post(request, type):
