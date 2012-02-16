@@ -7,7 +7,7 @@ from django_activity.activity.models import *
 class Activity_PageAdmin(admin.ModelAdmin):
     list_display = ('id', 'name')
 
-class Activity_Page_UsersAdmin(admin.ModelAdmin):
+class Activity_Page_UserAdmin(admin.ModelAdmin):
     list_display = ('activity_page', 'user')
 
 class PostAdmin(admin.ModelAdmin):

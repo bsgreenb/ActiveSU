@@ -12,19 +12,20 @@ class Migration(SchemaMigration):
         db.create_table('activity_activity_page', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('name', self.gf('django.db.models.fields.CharField')(max_length=50)),
+            ('url_code', self.gf('django.db.models.fields.CharField')(max_length=50)),
             ('created', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
             ('enabled', self.gf('django.db.models.fields.BooleanField')(default=True)),
         ))
         db.send_create_signal('activity', ['Activity_Page'])
 
-        # Adding model 'Activity_Page_Users'
-        db.create_table('activity_activity_page_users', (
+        # Adding model 'Activity_Page_User'
+        db.create_table('activity_activity_page_user', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('activity_page', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['activity.Activity_Page'])),
             ('user', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'])),
             ('join_time', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
         ))
-        db.send_create_signal('activity', ['Activity_Page_Users'])
+        db.send_create_signal('activity', ['Activity_Page_User'])
 
         # Adding model 'Post'
         db.create_table('activity_post', (
@@ -47,10 +48,11 @@ class Migration(SchemaMigration):
         db.create_table('activity_event_post', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('post', self.gf('django.db.models.fields.related.OneToOneField')(to=orm['activity.Post'], unique=True)),
+            ('title', self.gf('django.db.models.fields.CharField')(max_length=100)),
             ('where', self.gf('django.db.models.fields.CharField')(max_length=200)),
             ('start_datetime', self.gf('django.db.models.fields.DateTimeField')()),
             ('end_datetime', self.gf('django.db.models.fields.DateTimeField')(null=True, blank=True)),
-            ('description', self.gf('django.db.models.fields.CharField')(max_length=500)),
+            ('description', self.gf('django.db.models.fields.CharField')(max_length=300, null=True, blank=True)),
         ))
         db.send_create_signal('activity', ['Event_Post'])
 
@@ -70,8 +72,8 @@ class Migration(SchemaMigration):
         # Deleting model 'Activity_Page'
         db.delete_table('activity_activity_page')
 
-        # Deleting model 'Activity_Page_Users'
-        db.delete_table('activity_activity_page_users')
+        # Deleting model 'Activity_Page_User'
+        db.delete_table('activity_activity_page_user')
 
         # Deleting model 'Post'
         db.delete_table('activity_post')
@@ -93,10 +95,11 @@ class Migration(SchemaMigration):
             'enabled': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
-            'users': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['auth.User']", 'through': "orm['activity.Activity_Page_Users']", 'symmetrical': 'False'})
+            'url_code': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
+            'users': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['auth.User']", 'through': "orm['activity.Activity_Page_User']", 'symmetrical': 'False'})
         },
-        'activity.activity_page_users': {
-            'Meta': {'object_name': 'Activity_Page_Users'},
+        'activity.activity_page_user': {
+            'Meta': {'object_name': 'Activity_Page_User'},
             'activity_page': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['activity.Activity_Page']"}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'join_time': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
@@ -112,11 +115,12 @@ class Migration(SchemaMigration):
         },
         'activity.event_post': {
             'Meta': {'object_name': 'Event_Post'},
-            'description': ('django.db.models.fields.CharField', [], {'max_length': '500'}),
+            'description': ('django.db.models.fields.CharField', [], {'max_length': '300', 'null': 'True', 'blank': 'True'}),
             'end_datetime': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'post': ('django.db.models.fields.related.OneToOneField', [], {'to': "orm['activity.Post']", 'unique': 'True'}),
             'start_datetime': ('django.db.models.fields.DateTimeField', [], {}),
+            'title': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
             'where': ('django.db.models.fields.CharField', [], {'max_length': '200'})
         },
         'activity.post': {
