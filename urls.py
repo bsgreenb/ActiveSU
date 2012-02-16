@@ -18,6 +18,15 @@ urlpatterns = patterns('',
     url(r'^register/$', anonymous_required(views.register_page, '/'), name="register"),
     url(r'^logout/$', views.logout_page, name="logout"),
 
+    # change password
+    url(r'^password/change/$', password_change),
+    url(r'^password/change/done$', password_change_done),
+
+    # reset password
+    url(r'^accounts/password/reset/$', password_reset,{'post_reset_redirect' : '/accounts/password/reset/done/'}),
+    url(r'^accounts/password/reset/done/$', password_reset_done),
+    url(r'^accounts/password/reset/(?P<uidb36>[0-9A-Za-z]+)-(?P<token>.+)/$', password_reset_confirm,{'post_reset_redirect' : '/accounts/password/done/'}),
+    url(r'^accounts/password/done/$', password_reset_complete),
 
     # core
     url(r'^$', views.main_page, name="main_page"),

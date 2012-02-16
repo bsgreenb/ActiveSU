@@ -18,7 +18,7 @@ class RegistrationForm(BootstrapForm):
         }
 
     # we use prefix of the email as username
-    email = forms.EmailField(label=u'School Email', error_messages={'required':'a', 'invalid':''})
+    email = forms.EmailField(label=u'Stanford School Email', error_messages={'required':'a', 'invalid':''})
     password1 = forms.CharField(label=u'Password', widget=forms.PasswordInput(), error_messages={'required':'d', 'invalid':''})
     password2 = forms.CharField(label=u'Confirm Password', widget=forms.PasswordInput(), error_messages={'required':'e', 'invalid':''})
 

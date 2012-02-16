@@ -1,25 +1,20 @@
 {% extends 'backbone/base.html' %}
 
 {% block title %} - User Login{% endblock %}
-{% block css %}
-ul.errorlist{
-	margin: 10px 0;
-}
-
-h1{
-	border-bottom: 1px solid #EEEEEE;
-	padding-bottom: 10px;
-}
-{% endblock %}
 
 {% block content %}
-    <h1>Sign in</h1>
-    <form method="post" action=".">
+    <h1 class="form-page-title">Sign in</h1>
+    <form class="form-page-form" method="post" action=".">
         {% csrf_token %}
         {{form.as_p}}
         <p>
-            <input type="submit" value="login" class="btn primary"/>
-            or <a href="/register/">Sign up</a>
+            <div>
+                <input type="submit" value="login" class="btn primary"/> or <a href="/register/">Sign up</a>
+            </div>
+            
+            <div>
+                <a href="{% url django.contrib.auth.views.password_reset %}">Forgot password?</a>
+            </div>
             <input type="hidden" name="next" value="{% if next %}{{next}}{% else%}/{%endif%}" />
         </p>
     </form>
