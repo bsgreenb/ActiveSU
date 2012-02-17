@@ -47,7 +47,7 @@ class RegistrationForm(BootstrapForm):
 
 class CommentForm(forms.ModelForm):
     class Meta:
-        model = Comment
+        pass
 
 class TextPostForm(forms.Form):
     content = forms.CharField(max_length=500)
