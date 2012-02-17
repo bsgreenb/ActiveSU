@@ -76,7 +76,7 @@ class Comment(models.Model):
     comment_time = models.DateTimeField(auto_now_add = True)
 
     class Meta:
-        ordering = ['-comment_time']
+        ordering = ['comment_time']
     
     def __unicode__(self):
         return 'Comment by ' + str(self.user) + ' on ' + str(self.post) + ':' + self.content
