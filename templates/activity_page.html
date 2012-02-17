@@ -143,9 +143,9 @@ margin: 0
                                 <label class="control-label">Name </label>
                                 <div class="controls">
                                     {% if not user.is_authenticated %}
-                                    <input class="input-large disabled" type="text" value="" disabled=""/>
+                                    <input class="input-xlarge disabled" type="text" value="" disabled=""/>
                                     {% else %}
-                                    <input class="input-large" type="text" value="" name="title"/>
+                                    <input class="input-xlarge" type="text" value="" name="title"/>
                                     {% endif %}
                                 </div>
                             </div>
@@ -158,9 +158,9 @@ margin: 0
                                 <label class="control-label">Where </label>
                                 <div class="controls">
                                     {% if not user.is_authenticated %}
-                                    <input class="input-large disabled" type="text" value="" disabled=""/>
+                                    <input class="input-xlarge disabled" type="text" value="" disabled=""/>
                                     {% else %}
-                                    <input class="input-large" type="text" value="" name="where"/>
+                                    <input class="input-xlarge" type="text" value="" name="where"/>
                                     {% endif %}
                                 </div>
                             </div>
@@ -174,7 +174,6 @@ margin: 0
                                     <!--<input data-datepicker="datepicker" class="input-medium" type="text" value="" name="start_date"/>-->
                                     <input data-datepicker="datepicker" class="input-medium" type="text" value="" name="start_date"/>
                                     <select class="span2" name="start_time">
-                                        <option value="">Time</option>
                                         <option value="0">12:00 am</option>
                                         <option value="30">12:30 am</option>
                                         <option value="60">1:00 am</option>
@@ -215,7 +214,7 @@ margin: 0
                                         <option value="1110">6:30 pm</option>
                                         <option value="1140">7:00 pm</option>
                                         <option value="1170">7:30 pm</option>
-                                        <option value="1200">8:00 pm</option>
+                                        <option value="1200" selected="selected">8:00 pm</option>
                                         <option value="1230">8:30 pm</option>
                                         <option value="1260">9:00 pm</option>
                                         <option value="1290">9:30 pm</option>
@@ -295,9 +294,9 @@ margin: 0
                                 <label class="control-label">Description (optional)</label>
                                 <div class="controls">
                                     {% if not user.is_authenticated %}
-                                    <textarea class="input-large disabled" rows="2" disabled=""></textarea>
+                                    <textarea class="input-xlarge disabled" rows="2" disabled=""></textarea>
                                     {% else %}
-                                    <textarea name="description" class="input-large" rows="2" ></textarea>
+                                    <textarea name="description" class="input-xlarge" rows="2" ></textarea>
                                     {% endif %}
                                 </div>
                             </div>
@@ -342,9 +341,9 @@ margin: 0
 
                                     <div>
                                         {% if not user.is_authenticated %}
-                                        <input class="input-large comment disabled" placeholder="Write a comment..." disabled="">
+                                        <input class="input-xlarge comment disabled" placeholder="Write a comment..." disabled="">
                                         {% else %}
-                                        <input class="input-large comment" placeholder="Write a comment...">
+                                        <input class="input-xlarge comment" placeholder="Write a comment...">
                                         {% endif %}
                                     </div>
                                 </div>
@@ -367,7 +366,7 @@ margin: 0
                                     <div><b>Dong Jon: </b>let's meet at 7pm to play tennis.</div>
 
                                     <div>
-                                        <input class="input-large comment" placeholder="Write a comment...">
+                                        <input class="input-xlarge comment" placeholder="Write a comment...">
                                     </div>
                                 </div>
 
@@ -391,7 +390,7 @@ margin: 0
                                     <div><b>Dong Jon: </b>let's meet at 7pm to play tennis.</div>
 
                                     <div>
-                                        <input class="input-large comment" placeholder="Write a comment...">
+                                        <input class="input-xlarge comment" placeholder="Write a comment...">
                                     </div>
                                 </div>
                             </div>
@@ -408,7 +407,7 @@ margin: 0
                                     <div><b>Dong Jon: </b>let's meet at 7pm to play tennis.</div>
 
                                     <div>
-                                        <input class="input-large comment" placeholder="Write a comment...">
+                                        <input class="input-xlarge comment" placeholder="Write a comment...">
                                     </div>
                                 </div>
 
