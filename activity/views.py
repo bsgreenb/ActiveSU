@@ -103,7 +103,7 @@ def submit_comment(request):
             new_comment.save()
 
             result['status'] = 'OK'
-            result['comment'] = '<b>%s: </b>%s' % (request.user.username, content)
+            result['comment'] = '<b>%s: </b>%s <span class="post-end"> | %s </span>' % (request.user.username, content, new_comment.comment_time)
         else:
             result['status'] = 'invalid'
     

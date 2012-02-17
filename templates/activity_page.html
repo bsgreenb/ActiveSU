@@ -52,27 +52,27 @@
         });
 
         $('.input-large.comment').keypress(function(event) {
+            $('.comment-error-message').hide();
+            var target_divs = $('.' + $(this).attr('post-id'));
             var keycode = (event.keyCode ? event.keyCode : event.which);
             if(keycode == 13)
             {
-                thisInput = $(this); //store for later
+                thisInput = $(this); //store for showing comment error message
                 $.ajax({
                     url: 'submit_comment',
                     type: 'POST',
-                    data: 'post=' + $(this).attr('id') + '&content=' + $(this).val() + '&csrfmiddlewaretoken={{ csrf_token }}',
+                    data: 'post=' + thisInput.attr('post-id') + '&content=' + $(this).val() + '&csrfmiddlewaretoken={{ csrf_token }}',
                     complete: function (data, status)
                     {
                         data = $.parseJSON(data.responseText);
                         
                         if ((status == 'success') && data.status == 'OK' && data.length != 0)
                         {
-                            //Post succeeded so we add the comment above
-                            thisInput.parent().before('<div>' + data.comment + '</div>');
-                            thisInput.val('');
+                            target_divs.before('<div>' + data.comment + '</div>');
                         }
                         else
                         {
-                            //Post failed.  QSTN: How to show error message?
+                            thisInput.next('.comment-error-message').show();
                         }
                     }
                 });
@@ -378,15 +378,15 @@ margin: 0
                     <div class="comments">
                         {% if post.comment_set.all %}
                         {%for comment in post.comment_set.all %}
-                        <div><b>{{comment.user.username}}: </b>{{comment.content}} | {{comment.comment_time}}</div>
+                        <div><b>{{comment.user.username}}: </b>{{comment.content}}<span class="post-end"> | {{comment.comment_time}}</span></div>
                         {%endfor%}
                         {%endif%}
 
-                        <div>
+                        <div class="{{post.id}}">
                             {% if not user.is_authenticated %}
                             <input class="input-large comment disabled" placeholder="Register/login to write a comment" disabled="">
                             {% else %}
-                            <input id="{{post.id}}" class="input-large comment" placeholder="Write a comment...">
+                            <input class="input-large comment" placeholder="Write a comment..." post-id="{{post.id}}"><span class="comment-error-message" style="display:None">ah, please try again.</span>
                             {% endif %}
                         </div>
                     </div>
@@ -395,6 +395,7 @@ margin: 0
                 {%endif%}
             </div>
         </div>
+
         <div class="tab-pane" id="4">
             <div class="posts">
                 {% if not future_events %}
@@ -421,15 +422,15 @@ margin: 0
                     <div class="comments">
                         {% if event.post.comment_set.all %}
                         {% for comment in event.post.comment_set.all %}
-                        <div><b>{{comment.user.username}}: </b>{{comment.content}} | {{comment.comment_time}}</div>
+                        <div><b>{{comment.user.username}}: </b>{{comment.content}}<span class="post-end"> | {{comment.comment_time}}</span></div></div>
                         {%endfor%}
                         {%endif%}
 
-                        <div>
+                        <div class="{{event.post.id}}">
                             {% if not user.is_authenticated %}
                             <input class="input-large comment disabled" placeholder="login to make a comment..." disabled="">
                             {% else %}
-                            <input class="input-large comment" id="{{post.id}}" placeholder="Write a comment..."><span class="comment-error-message" style="display:None">ah, please try again.</span>
+                            <input class="input-large comment" post-id="{{event.post.id}}" placeholder="Write a comment..."><span class="comment-error-message" style="display:None">ah, please try again.</span>
                             {% endif %}
                         </div>
                     </div>
@@ -438,6 +439,8 @@ margin: 0
                 {% endif %}
             </div>
         </div>
+
+
     </div>
 </div>
 </div>
