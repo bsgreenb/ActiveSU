@@ -9,45 +9,6 @@ from utils import ReverseManager
 #Hmm lets see.  We want to get the Activity_Page LEFT JOIN (Post 
 #
 
-def get_activities_with_top_posts():
-    """Returns all activities with their most recent posts.  We use raw SQL because django 1.3 doesn't have prefetch_related().  This is the only way to do it in one query."""
-    return Activity_Page.objects.raw('''
-    SELECT activity_activity_page.id, activity_activity_page.name, activity_activity_page.url_code,
-    post_count,
-    posts.*
-    FROM
-    activity_activity_page
-    LEFT JOIN
-    (
-        SELECT activity_page_id, COUNT(*) as post_count
-        FROM
-        activity_post
-        GROUP BY activity_page_id
-    ) as post_count
-     ON post_count.activity_page_id = activity_activity_page.id
-    LEFT JOIN
-    (
-        SELECT activity_post.activity_page_id, activity_post.post_time,
-        auth_user.username,
-        activity_text_post.content,
-        activity_event_post.title,
-        MAX(activity_post.post_time)
-        FROM
-        activity_post
-        INNER JOIN
-        auth_user
-         ON activity_post.user_id = auth_user.id
-        LEFT JOIN
-        activity_text_post
-         ON activity_post.id = activity_text_post.post_id
-        LEFT JOIN
-        activity_event_post
-         ON activity_post.id = activity_event_post.post_id
-    ) as posts
-     ON posts.activity_page_id = activity_activity_page.id
-    ORDER BY post_count DESC,activity_page_id, post_time DESC
-    ''')
-
 class Activity_Page(models.Model):
     name = models.CharField(max_length=50)
     url_code = models.CharField(max_length=50) #This is the basis for the pretty url 
