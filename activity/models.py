@@ -1,14 +1,10 @@
 import datetime
+
 from django.db import models
 from django.db.models import Max, Count
 from django.contrib.auth.models import User
 
-#from django.db import connection #for debugging
-
-#Hmm lets see.  We want to get the Activity_Page LEFT JOIN (Post 
-#
-
-class UserProfile(models.Model):
+class UserProfile(models.Model):  # it's used for registration confirmation email.
     user = models.OneToOneField(User)
     confirmation_code = models.CharField(max_length = 33)
 

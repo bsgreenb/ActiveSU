@@ -1,6 +1,6 @@
 .content{
     min-height: 100px;
-    border-bottom: 1px solid #F2F3F4;
+    border-bottom: 1px solid #D2D9E7;
     padding: 5px 5px 15px 5px;
     margin-top: 10px;
 }
@@ -19,9 +19,9 @@
 
 .content .index-posts .post{
     font-size: 14px;
-    background-color:#F2F3F4;
+    background-color:#EDEFF4;
     padding: 8px;
-    border-top: 1px solid #EBEBEB;
+    border-top: 1px solid #F2F3F4;
 }
 
 .content .post-message{
@@ -54,17 +54,22 @@
 
 .content .posts .post .comments{
     margin: 5px 15px 0 15px;;
-    background-color: #F2F3F4;
+    background-color: #EDEFF4;
     font-size: 12px;
     padding: 0;
 }
 
 .content .posts .post .comments div{
     padding:5px;
-    border-top: 1px solid #EBEBEB;
+    border-top: 1px solid #D2D9E7;
 }
 
 .content .posts .post .comments .comment{
     margin: 0;
     width: 70%;
+}
+
+.comments .comment-error-message{
+    margin-left: 5px;
+    color: #B94A48;
 }

@@ -11,7 +11,7 @@ from django.db import transaction
 
 from activity.models import *
 from activity.forms import RegistrationForm, TextPostForm, EventPostForm
-from activity.lib import send_registration_confirmation
+from activity.library.send_mail import send_registration_confirmation
 
 @login_required
 def logout_page(request):

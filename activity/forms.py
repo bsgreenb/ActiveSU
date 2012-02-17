@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 
 from bootstrap.forms import BootstrapForm, Fieldset
 
-from activity.lib import send_registration_confirmation
+from activity.library.send_mail import send_registration_confirmation
 
 
 

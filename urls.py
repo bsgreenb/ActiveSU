@@ -24,11 +24,11 @@ urlpatterns = patterns('',
 
     url(r'^logout/$', views.logout_page, name="logout"),
     (r'^password/change/$', password_change),
-    (r'^password/change/done$', password_change_done),
+    (r'^password/change/done/$', password_change_done),
 
     # change password
     url(r'^password/change/$', password_change),
-    url(r'^password/change/done$', password_change_done),
+    url(r'^password/change/done/$', password_change_done),
 
     # reset password
     url(r'^accounts/password/reset/$', password_reset,{'post_reset_redirect' : '/accounts/password/reset/done/'}),

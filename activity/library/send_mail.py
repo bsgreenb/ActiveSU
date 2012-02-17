@@ -1,4 +1,5 @@
 __author__ = 'rui'
+
 from django.core.mail import send_mail
 
 def send_registration_confirmation(user):

@@ -75,8 +75,8 @@ margin: 0
 <div class="span9">
 <div class="content">
 <div class="head">
-    <a href="#" class="name">{{activity_page.name}}</a>
-    <span class="active-info">{{activity_page.post_set.all|length}} posts</span>
+    <a href="{{activity_page.url_code}}" class="name">{{activity_page.name}}</a>
+    <span class="active-info">| {{activity_page.post_set.all|length}} posts</span>
 </div>
 
 <div class="tabbable">
@@ -357,7 +357,7 @@ margin: 0
                             {% if not user.is_authenticated %}
                             <input class="input-large comment disabled" placeholder="login to make a comment..." disabled="">
                             {% else %}
-                            <input class="input-large comment" placeholder="Write a comment...">
+                            <input class="input-large comment" placeholder="Write a comment..."><span class="comment-error-message" style="display:None">ah, please try again.</span>
                             {% endif %}
                         </div>
                     </div>
@@ -400,7 +400,7 @@ margin: 0
                             {% if not user.is_authenticated %}
                             <input class="input-large comment disabled" placeholder="login to make a comment..." disabled="">
                             {% else %}
-                            <input class="input-large comment" placeholder="Write a comment...">
+                            <input class="input-large comment" placeholder="Write a comment..."><span class="comment-error-message" style="display:None">ah, please try again.</span>
                             {% endif %}
                         </div>
                     </div>
