@@ -25,16 +25,16 @@
                 <div class="head">
                     <a href="{{activity.url_code}}" class="name">{{activity.name}}</a>
                 </div>
-                {%if activity.post %}
+                {%if activity.post_time %}
                 <div class="index-posts">
                     <div class="post">
-                        <b>{{activity.post.user.username}}</b>
-                        {%if activity.post.title %}
-                        {{activity.post.title}}
+                        <b>{{activity.username}}</b>
+                        {%if activity.title %}
+                        {{activity.title}}
                         {%else%}
-                        {{activity.post.content}}
+                        {{activity.content}}
                         {%endif%}
-                        <span class="post-end"> | {{activity.post.post_time}}</span>
+                        <span class="post-end"> | {{activity.post_time}}</span>
                     </div>
                 </div>
                 {%endif%}

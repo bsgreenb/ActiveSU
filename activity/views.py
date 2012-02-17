@@ -35,9 +35,8 @@ def register_page(request):
 
 #TODO: update the template once I figure this one out
 def main_page(request):
-    #TODO: Gotta get this right per SO
-    #TODO: http://stackoverflow.com/questions/6194589/django-create-filter-for-nice-time
-    activities = Activity_Page.objects.filter(enabled=True).annotate(Max('post__post_time'),user_count = Count('users')).select_related().order_by('-user_count') #Gets the activity pages, and the most recent activity post of each
+    activities = get_activities_with_top_posts()
+    #Activity_Page.objects.filter(enabled=True).annotate(Max('post__post_time'),user_count = Count('users')).select_related().order_by('-user_count') #Gets the activity pages, and the most recent activity post of each
     
     return render_to_response('main_page.html', dict(activities = activities), context_instance=RequestContext(request))
 
@@ -45,7 +44,7 @@ def main_page(request):
 #TODO: Also need messages for not logged in users
 def activity_page(request, activity_url):
     try:
-        activity_page = Activity_Page.objects.get(url_code = activity_url)
+        activity_page = Activity_Page.objects.get(url_code = activity_url).prefetch_related('user_set')
     except Activity_Page.DoesNotExist:
         return HttpResponseRedirect(reverse('main_page'))
 
@@ -53,9 +52,6 @@ def activity_page(request, activity_url):
     if request.user.is_authenticated():
         Activity_Page_User.objects.get_or_create(user = request.user, activity_page = activity_page)
 
-    #Get users of this page
-    activity_page_users = activity_page.users 
-    
     # We want to get all the posts, with comments, ordered by their post date
     all_posts = activity_page.get_posts_and_comments()
 
@@ -74,7 +70,7 @@ def activity_page(request, activity_url):
     else:
         event_form_with_error = ''
 
-    return render_to_response('activity_page.html', dict(activity_page_users = activity_page_users, all_posts = all_posts, future_events = future_events, message_form_with_error = message_form_with_error, event_form_with_error = event_form_with_error), context_instance=RequestContext(request))
+    return render_to_response('activity_page.html', dict(activity_page = activity_page, all_posts = all_posts, future_events = future_events, message_form_with_error = message_form_with_error, event_form_with_error = event_form_with_error), context_instance=RequestContext(request))
 
 #Note: We currently assume that they're a member of the page, but in later versions we might have to think out a more complex system for joining and leaving of pages.
 @login_required
