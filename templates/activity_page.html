@@ -349,7 +349,7 @@ margin: 0
 <div class="tabbable">
     <ul class="nav nav-pills" id="tab-posts">
         <li class="active"><a href="#3" data-toggle="tab">Show All Messages</a></li>
-        <li><a href="#4" data-toggle="tab">Show All Events</a></li>
+        <li><a href="#4" data-toggle="tab">Show Only Events</a></li>
     </ul>
 
     <div class="tab-content">
@@ -383,7 +383,7 @@ margin: 0
 
                         <div>
                             {% if not user.is_authenticated %}
-                            <input id="{{post.id}}" class="input-large comment disabled" placeholder="Register/login to write a comment" disabled="">
+                            <input class="input-large comment disabled" placeholder="Register/login to write a comment" disabled="">
                             {% else %}
                             <input id="{{post.id}}" class="input-large comment" placeholder="Write a comment...">
                             {% endif %}
@@ -428,7 +428,7 @@ margin: 0
                             {% if not user.is_authenticated %}
                             <input class="input-large comment disabled" placeholder="login to make a comment..." disabled="">
                             {% else %}
-                            <input class="input-large comment" placeholder="Write a comment..."><span class="comment-error-message" style="display:None">ah, please try again.</span>
+                            <input class="input-large comment" id="{{post.id}}" placeholder="Write a comment..."><span class="comment-error-message" style="display:None">ah, please try again.</span>
                             {% endif %}
                         </div>
                     </div>
