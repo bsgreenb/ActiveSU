@@ -131,10 +131,8 @@ INSTALLED_APPS = (
     'django.contrib.humanize',
     'south',
     'bootstrap',
-    'registration',
 )
 
-ACCOUNT_ACTIVATION_DAYS = 7  # for registration email confirmation.
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
@@ -162,5 +160,5 @@ LOGGING = {
 LOGIN_REDIRECT_URL = '/'  # fail on require_login
 
 AUTHENTICATION_BACKENDS = (
-    'django_activity.activity.backends.EmailOrUsernameModelBackend',
-    'django.contrib.auth.backends.ModelBackend')
+    'django_activity.activity.backends.EmailOrUsernameModelBackend'),  # I check is_active here.
+    #'django.contrib.auth.backends.ModelBackend')

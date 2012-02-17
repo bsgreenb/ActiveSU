@@ -1,4 +1,4 @@
-import datetime
+import datetime, random, string
 
 from django.shortcuts import render_to_response
 from django.template import RequestContext
@@ -17,23 +17,44 @@ def logout_page(request):
     logout(request)
     return HttpResponseRedirect('/')
 
+def send_registration_confirmation(user):
+    p = user.get_profile()
+    title = "ActiveSU account confirmation"
+    content = "http://www.activesu.com/register/success/" + str(p.confirmation_code) + "/" + user.username
+    send_mail(title, content, 'no-reply@gsick.com', [user.email], fail_silently=False)
+
 def register_page(request):
     if request.method == 'POST':
         form = RegistrationForm(request.POST)
         if form.is_valid():
-            User.objects.create_user(
+            user = User.objects.create_user(
                 username = form.cleaned_data['email'].split('@')[0], #email prefix
                 password = form.cleaned_data['password1'],
                 email = form.cleaned_data['email']
             )
-
-            new_user = authenticate(username = request.POST['email'], password=request.POST['password1'])
-            auth_login(request, new_user)
-            return HttpResponseRedirect(reverse('main_page'))
+            user.is_active = False
+            user.save()
+            confirmation_code = ''.join(random.choice(string.ascii_uppercase + string.digits + string.ascii_lowercase) for x in range(33))
+            p = Profile(user=user, confirmation_code=confirmation_code)
+            p.save()
+            send_registration_confirmation(user)
+            return HttpResponseRedirect(reverse('register_confirm'))
     else:
         form = RegistrationForm()
 
     return render_to_response('registration/register.html', dict(form = form), context_instance=RequestContext(request))
+
+def confirm(request, confirmation_code, username):
+    try:
+        user = User.objects.get(username=username)
+        profile = user.get_profile()
+        if profile.confirmation_code == confirmation_code and user.date_joined > (datetime.datetime.now()-datetime.timedelta(days=1)):
+            user.is_active = True
+            user.save()
+            auth_login(request, user)
+        return HttpResponseRedirect(reverse('main_page'))
+    except:
+        return HttpResponseRedirect(reverse('registration_page'))
 
 #TODO: update the template once I figure this one out
 def main_page(request):
