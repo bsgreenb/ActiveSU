@@ -79,11 +79,14 @@ def activity_page(request, activity_url):
 def submit_comment(request):
     if request.is_ajax() and request.method == 'POST':
         result = []
-        form = CommentPostForm(request.POST) #TODO: Create this form
+        form = CommentPostForm(user=user, post = request.POST['post'], content=request.POST['content']) #We use a ModelForm for validation
         if form.is_valid():
             post = form.cleaned_data['post']
+            
             content = form.cleaned_data['content']
-            Comment.create(user = request.user, post = post, content = content)
+            new_comment = Comment(user = request.user, post = post, content = content)
+            new_comment.save()
+
             result['status'] = 'OK'
         else:
             result['status'] = 'invalid'
@@ -97,13 +100,13 @@ def submit_comment(request):
 @login_required
 def submit_text_post(request):
     if request.method == 'POST':
-        try:
-            activity_page = Activity_Page.objects.get(pk = request.POST['activity_page'])
-        except Activity_Page.DoesNotExist:
-            return Http404
-
         form = TextPostForm(request.POST)
         if form.is_valid():
+            try:
+                activity_page = Activity_Page.objects.get(pk = request.POST['activity_page'])
+            except Activity_Page.DoesNotExist:
+                return Http404
+            
             with transaction.commit_on_success():
                 new_post = Post(user = request.user, activity_page = activity_page)
                 new_post.save()
@@ -120,13 +123,13 @@ def submit_text_post(request):
 @login_required
 def submit_event_post(request):
     if request.method == 'POST':
-        try:
-            activity_page = Activity_Page.objects.get(pk = request.POST['activity_page'])
-        except Activity_Page.DoesNotExist:
-            return Http404
-
         form = EventPostForm(request.POST)
         if form.is_valid():
+            try:
+                activity_page = Activity_Page.objects.get(pk = request.POST['activity_page'])
+            except Activity_Page.DoesNotExist:
+                return Http404
+            
             with transaction.commit_on_success():
                 new_post = Post(user = request.user, activity_page = activity_page)
                 new_post.save()

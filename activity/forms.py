@@ -38,7 +38,9 @@ class RegistrationForm(BootstrapForm):
                 return password2
         raise forms.ValidationError('Passwords do not match')
 
-
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
 
 class TextPostForm(forms.Form):
     content = forms.CharField(max_length=500)
