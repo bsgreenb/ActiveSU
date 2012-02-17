@@ -18,30 +18,32 @@
         <div class="span9">
         {% for activity in activities %}
             {%if forloop.first %}
-            <div class="content first">
+                <div class="content first">
             {%else%}
-            <div class="content">
+                <div class="content">
             {%endif%}
                 <div class="head">
                     <a href="{{activity.url_code}}" class="name">{{activity.name}}</a>
-                    <span class="active-info">({{activity.post_set|length}} posts)</span>
+                    <span class="active-info">{{activity.post_set.all|length}} posts</span>
                 </div>
-                {%if activity.post_set.all %}
-                {%for post in activity.post_set.all|slice:"3"%}
                 <div class="index-posts">
-                    <div>Most recent posts:</div>
-                    <div class="post">
-                        <b>{{post.user.username}}</b>
-                        {%if post.event_post.title %}
-                        {{post.event_post.title}}
-                        {%else%}
-                        {{post.text_post.content}}
-                        {%endif%}
-                        <span class="post-end"> | {{post.post_time}}</span>
-                    </div>
-                </div>
-                {%endfor%}
+                {%if activity.post_set.all %}
+                    {%for post in activity.post_set.all|slice:"3"%}
+                        <div class="post">
+                            <b>{{post.user.username}}: </b>
+
+                            {%if post.event_post.title %}
+                                {{post.event_post.title}}
+                            {%else%}
+                                {{post.text_post.content}}
+                            {%endif%}
+
+                            <span class="post-end"> | {{post.post_time}}</span>
+                        </div>
+                    {%endfor%}
+                    <div class="post"><a href="{{activity.url_code}}"><i class="icon-comment"></i> view all posts</a></div>
                 {%endif%}
+                </div>
              </div>
         {%endfor%}
         </div>

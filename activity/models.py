@@ -2,8 +2,6 @@ from django.db import models
 from django.db.models import Max, Count
 from django.contrib.auth.models import User
 
-from utils import ReverseManager
-
 #from django.db import connection #for debugging
 
 #Hmm lets see.  We want to get the Activity_Page LEFT JOIN (Post 
@@ -33,10 +31,6 @@ class Activity_Page(models.Model):
         """
         #TODO: This is proly wrong
         return Event_Post.objects.filter(post__activity_page=self).order_by('start_datetime', '-comment__comment_time')
-
-    #Reverse manager so we can prefetch all the posts
-    objects = models.Manager()
-    reversemanager = ReverseManager({'posts': 'post_set'})
 
 class Activity_Page_User(models.Model):
     activity_page = models.ForeignKey(Activity_Page)
