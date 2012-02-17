@@ -7,10 +7,6 @@ from activity.models import *
 
 from bootstrap.forms import BootstrapForm, Fieldset
 
-
-
-
-
 class RegistrationForm(BootstrapForm):
     class Meta:
         layout = {

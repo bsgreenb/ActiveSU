@@ -10,7 +10,7 @@ from django.utils import simplejson
 from django.db import transaction
 
 from activity.models import *
-from activity.forms import RegistrationForm, TextPostForm, EventPostForm
+from activity.forms import RegistrationForm, TextPostForm, EventPostForm, CommentForm
 
 @login_required
 def logout_page(request):
@@ -78,20 +78,20 @@ def activity_page(request, activity_url):
 @login_required
 def submit_comment(request):
     if request.is_ajax() and request.method == 'POST':
-        result = []
-        form = CommentPostForm(user=user, post = request.POST['post'], content=request.POST['content']) #We use a ModelForm for validation
+        result = {}
+        form = CommentForm(dict(user=request.user.id, post = request.POST['post'], content=request.POST['content'])) #We use a ModelForm for validation
         if form.is_valid():
             post = form.cleaned_data['post']
-            
             content = form.cleaned_data['content']
             new_comment = Comment(user = request.user, post = post, content = content)
             new_comment.save()
 
             result['status'] = 'OK'
+            result['comment'] = '<b>%s: </b>%s' % (request.user.username, content)
         else:
             result['status'] = 'invalid'
     
-        return HttpResponse(simplejson.dumps(results))
+        return HttpResponse(simplejson.dumps(result))
     else:
         return Http404
 
