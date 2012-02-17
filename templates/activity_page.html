@@ -55,6 +55,7 @@
             var keycode = (event.keyCode ? event.keyCode : event.which);
             if(keycode == 13)
             {
+                thisInput = $(this); //store for later
                 $.ajax({
                     url: 'submit_comment',
                     type: 'POST',
@@ -66,8 +67,8 @@
                         if ((status == 'success') && data.status == 'OK' && data.length != 0)
                         {
                             //Post succeeded so we add the comment above
-                            $(this).parent().before('<div>' + data.comment + '</div>');
-                            $(this).val('');
+                            thisInput.parent().before('<div>' + data.comment + '</div>');
+                            thisInput.val('');
                         }
                         else
                         {
