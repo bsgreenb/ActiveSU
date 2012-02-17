@@ -1,69 +1,73 @@
 {% extends 'backbone/base.html' %}
 
 {% block css-link %}
-    <link href="/static/css/wall.css" type="text/css" title="default" rel="stylesheet" media="screen, projection">
+<link href="/static/css/wall.css" type="text/css" title="default" rel="stylesheet" media="screen, projection">
 
-    <link href="/static/css/datepicker.css" type="text/css" title="default" rel="stylesheet" media="screen, projection">
+<link href="/static/css/datepicker.css" type="text/css" title="default" rel="stylesheet" media="screen, projection">
 {% endblock %}
 
 {% block js %}
-    <script src="/static/js/plugin/bootstrap-datepicker.js"></script>
-    <script src="/static/js/plugin/events.js"></script>
+<script src="/static/js/plugin/bootstrap-datepicker.js"></script>
+<script src="/static/js/plugin/events.js"></script>
 
-    <script>
-        $(document).ready(function() {
-            $('a.close').live('click',function() {
-                $(this).parent('div.alert').remove();
-            });
-
-
-            /* Update datepicker plugin so that MM/DD/YYYY format is used. */
-            $.extend($.fn.datepicker.defaults, {
-                parse: function (string) {
-                    var matches;
-                    if ((matches = string.match(/^(\d{2,2})\/(\d{2,2})\/(\d{4,4})$/))) {
-                        return new Date(matches[3], matches[1] - 1, matches[2]);
-                    } else {
-                        return null;
-                    }
-                },
-                format: function (date) {
-                    var
-                            month = (date.getMonth() + 1).toString(),
-                            dom = date.getDate().toString();
-                    if (month.length === 1) {
-                        month = "0" + month;
-                    }
-                    if (dom.length === 1) {
-                        dom = "0" + dom;
-                    }
-                    return month + "/" + dom + "/" + date.getFullYear();
-                }
-            });
-
-
-            $('#post-message').keypress(function(event) {
-                var keycode = (event.keyCode ? event.keyCode : event.which);
-                if(keycode == 13){
-                    $('#post-message-form').submit();
-                }
-            });
+<script>
+    $(document).ready(function() {
+        $('a.close').live('click',function() {
+            $(this).parent('div.alert').remove();
         });
 
-    </script>
+
+        /* Update datepicker plugin so that MM/DD/YYYY format is used. */
+        $.extend($.fn.datepicker.defaults, {
+            parse: function (string) {
+                var matches;
+                if ((matches = string.match(/^(\d{2,2})\/(\d{2,2})\/(\d{4,4})$/))) {
+                    return new Date(matches[3], matches[1] - 1, matches[2]);
+                } else {
+                    return null;
+                }
+            },
+            format: function (date) {
+                var
+                        month = (date.getMonth() + 1).toString(),
+                        dom = date.getDate().toString();
+                if (month.length === 1) {
+                    month = "0" + month;
+                }
+                if (dom.length === 1) {
+                    dom = "0" + dom;
+                }
+                return month + "/" + dom + "/" + date.getFullYear();
+            }
+        });
+
+
+        $('#post-message').keypress(function(event) {
+            var keycode = (event.keyCode ? event.keyCode : event.which);
+            if(keycode == 13){
+                $('#post-message-form').submit();
+            }
+        });
+    });
+
+</script>
 {% endblock %}
 
 
 {% block css %}
 .datepicker .fg{
-    font-size: 13px;
+font-size: 13px;
 }
 
 .datepicker .dow{
-    font-size: 12px;
+font-size: 12px;
 }
-{% endblock %}
 
+#tab-posts{
+margin: 0
+}
+
+{% endblock %}
 
 
 {% block content %}
@@ -72,115 +76,270 @@
             <div class="content">
                 <div class="head">
                     <a href="#" class="name">{{activity_page.name}}</a>
-                    <!-- <span class="active-info">N posts | N active members</span> -->
+                    <span class="active-info">({{activity_page.post_set|length}} posts)</span> 
+                </div>
+            </div>
+            <div class="tabbable">
+                <ul class="nav nav-tabs">
+                    <li class="active">
+                        <a href="#1" data-toggle="tab">Message</a>
+                    </li>
+                    <li>
+                        <a href="#2" data-toggle="tab">Event</a>
+                    </li>
+                </ul>
+
+
+                <div class="tab-content">
+
+                    <div class="tab-pane active" id="1">
+                        <form method="POST" action="{% url post_message %}" id="post-message-form">
+                            <input type="hidden" name="activity_page" value="{{activity_page.id}}" />
+                            {% csrf_token %}
+                            {% if message_form_with_error %}
+                            <div class="alert alert-error">
+                                <a class="close" href="#">x</a>
+                                <ul>
+                                    {% for field in message_form_with_error %}
+                                    {% if field.errors %}
+                                    <li>{{ field.errors|striptags }}</li>
+                                    {% endif %}
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                            {% endif %}
+
+                            {% if not user.is_authenticated %}
+                            <input class="input-xlarge post-message disabled" disabled="" placeholder="Please login or sign up to write a message."/>
+                            {% else %}
+                            <input class="input-xlarge post-message" placeholder="Write a message..." name="content" id="post-message"/>
+                            {% endif %}
+                        </form>
+                    </div>
+
+
+                    <div class="tab-pane" id="2">
+
+                        <form class="form-horizontal" method="POST" action="{% url post_event %}">
+                            <input type="hidden" name="activity_page" value="{{activity_page.id}}" />
+                            {% csrf_token %}
+                            {% if event_form_with_error %}
+                            <div class="alert alert-error">
+                                <a class="close" href="#">x</a>
+                                <ul>
+                                    {% for field in event_form_with_error %}
+                                    {% if field.errors %}
+                                    <li>{{field.errors|striptags }}</li>
+                                    {% endif %}
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                            {% endif %}
+
+
+
+
+                            <div class="control-group">
+                                <label class="control-label">Name </label>
+                                <div class="controls">
+                                    {% if not user.is_authenticated %}
+                                    <input class="input-xlarge disabled" type="text" value="" disabled=""/>
+                                    {% else %}
+                                    <input class="input-xlarge" type="text" value="" name="title"/>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <div class="control-group">
+                                <label class="control-label">Where </label>
+                                <div class="controls">
+                                    {% if not user.is_authenticated %}
+                                    <input class="input-xlarge disabled" type="text" value="" disabled=""/>
+                                    {% else %}
+                                    <input class="input-xlarge" type="text" value="" name="where"/>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <div class="control-group">
+                                <label class="control-label">Start </label>
+                                <div class="controls">
+                                    {% if not user.is_authenticated %}
+                                    <input data-datepicker="datepicker" class="input-medium disabled" type="text" value="" disabled=""/> <select class="span2 disabled" disabled=""><option>Time</option></select>
+                                    {% else %}
+                                    <!--<input data-datepicker="datepicker" class="input-medium" type="text" value="" name="start_date"/>-->
+                                    <input data-datepicker="datepicker" class="input-medium" type="text" value="" name="start_date"/>
+                                    <select class="span2" name="start_time">
+                                        <option value="0">12:00 am</option>
+                                        <option value="30">12:30 am</option>
+                                        <option value="60">1:00 am</option>
+                                        <option value="90">1:30 am</option>
+                                        <option value="120">2:00 am</option>
+                                        <option value="150">2:30 am</option>
+                                        <option value="180">3:00 am</option>
+                                        <option value="210">3:30 am</option>
+                                        <option value="240">4:00 am</option>
+                                        <option value="270">4:30 am</option>
+                                        <option value="300">5:00 am</option>
+                                        <option value="330">5:30 am</option>
+                                        <option value="360">6:00 am</option>
+                                        <option value="390">6:30 am</option>
+                                        <option value="420">7:00 am</option>
+                                        <option value="450">7:30 am</option>
+                                        <option value="480">8:00 am</option>
+                                        <option value="510">8:30 am</option>
+                                        <option value="540">9:00 am</option>
+                                        <option value="570">9:30 am</option>
+                                        <option value="600">10:00 am</option>
+                                        <option value="630">10:30 am</option>
+                                        <option value="660">11:00 am</option>
+                                        <option value="690">11:30 am</option>
+                                        <option value="720">12:00 pm</option>
+                                        <option value="750">12:30 pm</option>
+                                        <option value="780">1:00 pm</option>
+                                        <option value="810">1:30 pm</option>
+                                        <option value="840">2:00 pm</option>
+                                        <option value="870">2:30 pm</option>
+                                        <option value="900">3:00 pm</option>
+                                        <option value="930">3:30 pm</option>
+                                        <option value="960">4:00 pm</option>
+                                        <option value="990">4:30 pm</option>
+                                        <option value="1020">5:00 pm</option>
+                                        <option value="1050">5:30 pm</option>
+                                        <option value="1080">6:00 pm</option>
+                                        <option value="1110">6:30 pm</option>
+                                        <option value="1140">7:00 pm</option>
+                                        <option value="1170">7:30 pm</option>
+                                        <option value="1200" selected="selected">8:00 pm</option>
+                                        <option value="1230">8:30 pm</option>
+                                        <option value="1260">9:00 pm</option>
+                                        <option value="1290">9:30 pm</option>
+                                        <option value="1320">10:00 pm</option>
+                                        <option value="1350">10:30 pm</option>
+                                        <option value="1380">11:00 pm</option>
+                                        <option value="1410">11:30 pm</option>
+                                    </select>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <div class="control-group">
+                                <label class="control-label">End (optional) </label>
+                                <div class="controls">
+                                    {% if not user.is_authenticated %}
+                                    <input data-datepicker="datepicker" class="input-medium disabled" type="text" value="" disabled=""/>
+                                    <select class="span2 disabled" disabled=""><option value="">Time</option></select>
+                                    {% else %}
+                                    <input data-datepicker="datepicker" class="input-medium" type="text" value="" name="end_date"/>
+                                    <select class="span2" name="end_time">
+                                        <option value="">Time</option>
+                                        <option value="0">12:00 am</option>
+                                        <option value="30">12:30 am</option>
+                                        <option value="60">1:00 am</option>
+                                        <option value="90">1:30 am</option>
+                                        <option value="120">2:00 am</option>
+                                        <option value="150">2:30 am</option>
+                                        <option value="180">3:00 am</option>
+                                        <option value="210">3:30 am</option>
+                                        <option value="240">4:00 am</option>
+                                        <option value="270">4:30 am</option>
+                                        <option value="300">5:00 am</option>
+                                        <option value="330">5:30 am</option>
+                                        <option value="360">6:00 am</option>
+                                        <option value="390">6:30 am</option>
+                                        <option value="420">7:00 am</option>
+                                        <option value="450">7:30 am</option>
+                                        <option value="480">8:00 am</option>
+                                        <option value="510">8:30 am</option>
+                                        <option value="540">9:00 am</option>
+                                        <option value="570">9:30 am</option>
+                                        <option value="600">10:00 am</option>
+                                        <option value="630">10:30 am</option>
+                                        <option value="660">11:00 am</option>
+                                        <option value="690">11:30 am</option>
+                                        <option value="720">12:00 pm</option>
+                                        <option value="750">12:30 pm</option>
+                                        <option value="780">1:00 pm</option>
+                                        <option value="810">1:30 pm</option>
+                                        <option value="840">2:00 pm</option>
+                                        <option value="870">2:30 pm</option>
+                                        <option value="900">3:00 pm</option>
+                                        <option value="930">3:30 pm</option>
+                                        <option value="960">4:00 pm</option>
+                                        <option value="990">4:30 pm</option>
+                                        <option value="1020">5:00 pm</option>
+                                        <option value="1050">5:30 pm</option>
+                                        <option value="1080">6:00 pm</option>
+                                        <option value="1110">6:30 pm</option>
+                                        <option value="1140">7:00 pm</option>
+                                        <option value="1170">7:30 pm</option>
+                                        <option value="1200">8:00 pm</option>
+                                        <option value="1230">8:30 pm</option>
+                                        <option value="1260">9:00 pm</option>
+                                        <option value="1290">9:30 pm</option>
+                                        <option value="1320">10:00 pm</option>
+                                        <option value="1350">10:30 pm</option>
+                                        <option value="1380">11:00 pm</option>
+                                        <option value="1410">11:30 pm</option>
+                                    </select>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <div class="control-group">
+                                <label class="control-label">Description (optional)</label>
+                                <div class="controls">
+                                    {% if not user.is_authenticated %}
+                                    <textarea class="input-xlarge disabled" rows="2" disabled=""></textarea>
+                                    {% else %}
+                                    <textarea name="description" class="input-xlarge" rows="2" ></textarea>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <div class="control-group">
+                                <label class="control-label"></label>
+                                <div class="controls">
+                                    {% if not user.is_authenticated %}
+                                    <button class="btn btn-success disabled" disabled="">Create Event</button>
+                                    {% else %}
+                                    <button class="btn btn-success" type="submit">Create Event</button>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </form>
+                    </div>
                 </div>
 
-                <div class="tabbable">
-                    <ul class="nav nav-tabs">
-                        <li class="active">
-                            <a href="#1" data-toggle="tab">Message</a>
-                        </li>
-                        <li>
-                            <a href="#2" data-toggle="tab">Event</a>
-                        </li>
-                    </ul>
+
+            </div>
 
 
-                    <div class="tab-content">
+            <div class="tabbable">
+                <ul class="nav nav-pills" id="tab-posts">
+                    <li class="active"><a href="#3" data-toggle="tab">Show All Messages</a></li>
+                    <li><a href="#4" data-toggle="tab">Show All Events</a></li>
+                </ul>
 
-                        <div class="tab-pane active" id="1">
-                            <form method="POST" action="{% url post_message %}" id="post-message-form">
-                                {% csrf_token %}
-                                {% if message_form_with_error %}
-                                    <div class="alert alert-error">
-                                        <a class="close" href="#">x</a>
-                                        <ul>
-                                            {% for field in message_form_with_error %}
-                                                {% if field.errors %}
-                                                    <li>{{ field.errors|striptags }}</li>
-                                                {% endif %}
-                                            {% endfor %}
-                                        </ul>
-                                    </div>
-                                {% endif %}
+                <div class="tab-content">
+                    <div class="tab-pane active" id="3">
+                        <div class="posts">
+                            <div class="post">
+                                <b>rui xia: </b> I'd like to play basketball with someone wednesday night at court. Meet me at stanford university ave.
+                                    <span class="post-end">
+                                        | 15 hours ago
+                                    </span>
 
-                                {% if not user.is_authenticated %}
-                                    <input class="input-xlarge post-message disabled" disabled="" placeholder="Please login or sign up to write a message."/>
-                                {% else %}
-                                    <input class="input-xlarge post-message" placeholder="Write a message..." name="content" id="post-message"/><input type="hidden" name="activity_page" value="1" />
-                                {% endif %}
-                            </form>
-                        </div>
+                                <div class="comments">
+                                    <div><a href="#"><i class="icon-comment"></i> View all 10 comments</a></div>
+                                    <div><b>Dong Jon: </b>let's meet at 7pm to play tennis.</div>
+                                    <div><b>Dong Jon: </b>let's meet at 7pm to play tennis.</div>
 
-
-                        <div class="tab-pane" id="2">
-
-                            <form class="form-horizontal" method="POST" action="{% url post_event %}">
-                                {% csrf_token %}
-                                {% if event_form_with_error %}
-                                <div class="alert alert-error">
-                                    <a href="close" href="#">x</a>
-                                    <ul>
-                                        {% for field in event_form_with_error %}
-                                            {% if field.errors %}
-                                                <li>{{field.errors|striptags }}</li>
-                                            {% endif %}
-                                        {% endfor %}
-                                    </ul>
-                                </div>
-                                {% endif %}
-
-                                <div class="control-group">
-                                    <label class="control-label">Where </label>
-                                    <div class="controls">
+                                    <div>
                                         {% if not user.is_authenticated %}
-                                            <input class="input-large disabled" type="text" value="" disabled=""/>
+                                        <input class="input-xlarge comment disabled" placeholder="Write a comment..." disabled="">
                                         {% else %}
-                                            <input class="input-large" type="text" value="" name="where"/>
-                                        {% endif %}
-                                    </div>
-                                </div>
-
-                                <div class="control-group">
-                                    <label class="control-label">Start </label>
-                                    <div class="controls">
-                                        {% if not user.is_authenticated %}
-                                            <input data-datepicker="datepicker" class="input-medium disabled" type="text" value="" disabled=""/> <select class="span1 disabled" disabled=""><option>Time</option></select>
-                                        {% else %}
-                                            <input data-datepicker="datepicker" class="input-medium" type="text" value="" name="start_date"/> <select class="span1" name="start_time"><option>Time</option></select>
-                                        {% endif %}
-                                    </div>
-                                </div>
-
-                                <div class="control-group">
-                                    <label class="control-label">End (optional) </label>
-                                    <div class="controls">
-                                        {% if not user.is_authenticated %}
-                                        <input data-datepicker="datepicker" class="input-medium disabled" type="text" value="" disabled=""/> <select class="span1 disabled" disabled=""><option>Time</option></select>
-                                        {% else %}
-                                        <input data-datepicker="datepicker" class="input-medium" type="text" value="" name="end_date"/> <select class="span1" name="end_time"><option>Time</option></select>
-                                        {% endif %}
-                                    </div>
-                                </div>
-
-                                <div class="control-group">
-                                    <label class="control-label">Description </label>
-                                    <div class="controls">
-                                        {% if not user.is_authenticated %}
-                                            <textarea class="input-large disabled" rows="2" disabled=""></textarea>
-                                        {% else %}
-                                            <textarea name="description" class="input-large" rows="2" ></textarea>
-                                        {% endif %}
-                                    </div>
-                                </div>
-
-                                <div class="control-group">
-                                    <label class="control-label"></label>
-                                    <div class="controls">
-                                        {% if not user.is_authenticated %}
-                                            <button class="btn btn-success disabled" disabled="">Create Event</button>
-                                        {% else %}
-                                            <button class="btn btn-success" type="submit">Create Event</button>
+                                        <input class="input-xlarge comment" placeholder="Write a comment...">
                                         {% endif %}
                                     </div>
                                 </div>
@@ -223,16 +382,18 @@
                                 {% else %}
                                     <input class="input-large comment" placeholder="Write a comment...">
                                 {% endif %}
-                            </div>
-                        </div>
 
-                    </div>
+                            </div>
                     {%endfor%}
                     {%endif%}
+                    <div class="tab-pane" id="4">
+                        <p>I am section 2</p>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
 {% endblock %}
 
 

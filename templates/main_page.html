@@ -24,10 +24,12 @@
             {%endif%}
                 <div class="head">
                     <a href="{{activity.url_code}}" class="name">{{activity.name}}</a>
+                    <span class="active-info">({{activity.post_set|length}} posts)</span>
                 </div>
                 {%if activity.post_set.all %}
                 {%for post in activity.post_set.all|slice:"3"%}
                 <div class="index-posts">
+                    <div>Most recent posts:</div>
                     <div class="post">
                         <b>{{post.user.username}}</b>
                         {%if post.event_post.title %}

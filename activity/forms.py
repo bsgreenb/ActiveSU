@@ -18,7 +18,7 @@ class RegistrationForm(BootstrapForm):
         }
 
     # we use prefix of the email as username
-    email = forms.EmailField(label=u'School Email', error_messages={'required':'a', 'invalid':''})
+    email = forms.EmailField(label=u'Stanford School Email', error_messages={'required':'a', 'invalid':''})
     password1 = forms.CharField(label=u'Password', widget=forms.PasswordInput(), error_messages={'required':'d', 'invalid':''})
     password2 = forms.CharField(label=u'Confirm Password', widget=forms.PasswordInput(), error_messages={'required':'e', 'invalid':''})
 
@@ -45,9 +45,10 @@ class TextPostForm(forms.Form):
     activity_page = forms.IntegerField(min_value=1)
 
 class EventPostForm(forms.Form):
+    title = forms.CharField(max_length=100)
     start_date = forms.DateTimeField()
-    start_time = forms.TimeField()
+    start_time = forms.IntegerField()
     end_date = forms.DateTimeField(required = False)
-    end_time = forms.TimeField(required = False)
+    end_time = forms.IntegerField(required = False)
     where = forms.CharField(max_length = 200)
-    description = forms.CharField(max_length = 500)
+    description = forms.CharField(max_length = 500, required=False)
