@@ -23,7 +23,7 @@ class Activity_Page(models.Model):
         Get all posts (and comments on them) for the activity page, ordered by when they were posted.
         """
         #TODO: Same issue as above, not sure I'm doing this right..
-        return Post.objects.filter(activity_page=self).select_related().order_by('-post_time', '-comment__comment_time')
+        return Post.objects.filter(activity_page=self).select_related().order_by('-post_time')
  
 
     def get_future_events_and_comments(self):
@@ -75,5 +75,10 @@ class Comment(models.Model):
     content = models.CharField(max_length=250)
     comment_time = models.DateTimeField(auto_now_add = True)
 
+    class Meta:
+        ordering = ['comment_time']
+    
     def __unicode__(self):
         return 'Comment by ' + str(self.user) + ' on ' + str(self.post) + ':' + self.content
+
+
