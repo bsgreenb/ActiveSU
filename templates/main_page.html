@@ -25,18 +25,20 @@
                 <div class="head">
                     <a href="{{activity.url_code}}" class="name">{{activity.name}}</a>
                 </div>
-                {%if activity.post_time %}
+                {%if activity.post_set.all %}
+                {%for post in activity.post_set.all|slice:"3"%}
                 <div class="index-posts">
                     <div class="post">
-                        <b>{{activity.username}}</b>
-                        {%if activity.title %}
-                        {{activity.title}}
+                        <b>{{post.user.username}}</b>
+                        {%if post.event_post.title %}
+                        {{post.event_post.title}}
                         {%else%}
-                        {{activity.content}}
+                        {{post.text_post.content}}
                         {%endif%}
-                        <span class="post-end"> | {{activity.post_time}}</span>
+                        <span class="post-end"> | {{post.post_time}}</span>
                     </div>
                 </div>
+                {%endfor%}
                 {%endif%}
              </div>
         {%endfor%}

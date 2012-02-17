@@ -54,6 +54,7 @@ class Post(models.Model):
     
     class Meta:
         get_latest_by = 'post_time'
+        ordering = ['-post_time']
 
 class Text_Post(models.Model):
     post = models.OneToOneField(Post)
