@@ -1,3 +1,4 @@
+import datetime
 from django.db import models
 from django.db.models import Max, Count
 from django.contrib.auth.models import User
@@ -29,8 +30,8 @@ class Activity_Page(models.Model):
         """
         Gets all future events for the activity page, ordered by when the event will happen, not when it was posted. Also gets the comments for those events
         """
-        #TODO: This is proly wrong
-        return Event_Post.objects.filter(post__activity_page=self).order_by('start_datetime', '-comment__comment_time')
+        #TODO. would this cause problem ????
+        return Event_Post.objects.filter(post__activity_page=self, start_datetime__gt=datetime.datetime.now().date()).select_related().order_by('start_datetime', 'post__comment__comment_time')
 
 class Activity_Page_User(models.Model):
     activity_page = models.ForeignKey(Activity_Page)
