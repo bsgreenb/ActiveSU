@@ -2,8 +2,6 @@ from django.db import models
 from django.db.models import Max, Count
 from django.contrib.auth.models import User
 
-from utils import ReverseManager
-
 #from django.db import connection #for debugging
 
 #Hmm lets see.  We want to get the Activity_Page LEFT JOIN (Post 
