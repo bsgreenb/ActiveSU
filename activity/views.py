@@ -95,11 +95,14 @@ def activity_page(request, activity_url):
 def submit_comment(request):
     if request.is_ajax() and request.method == 'POST':
         result = []
-        form = CommentPostForm(request.POST) #TODO: Create this form
+        form = CommentPostForm(user=user, post = request.POST['post'], content=request.POST['content']) #We use a ModelForm for validation
         if form.is_valid():
             post = form.cleaned_data['post']
+            
             content = form.cleaned_data['content']
-            Comment.create(user = request.user, post = post, content = content)
+            new_comment = Comment(user = request.user, post = post, content = content)
+            new_comment.save()
+
             result['status'] = 'OK'
         else:
             result['status'] = 'invalid'
@@ -111,57 +114,61 @@ def submit_comment(request):
 #TODO: Possibly split into two.. qstn: model form issues?
 #TODO: Will take both text and event posts
 @login_required
-def submit_post(request, type):
-
+def submit_text_post(request):
     if request.method == 'POST':
-        try:
-            activity_page = Activity_Page.objects.get(pk = request.POST['activity_page'])
-        except Activity_Page.DoesNotExist:
-            return Http404
+        form = TextPostForm(request.POST)
+        if form.is_valid():
+            try:
+                activity_page = Activity_Page.objects.get(pk = request.POST['activity_page'])
+            except Activity_Page.DoesNotExist:
+                return Http404
+            
+            with transaction.commit_on_success():
+                new_post = Post(user = request.user, activity_page = activity_page)
+                new_post.save()
 
-        if type == 'message':
-            form = TextPostForm(request.POST)
-            if form.is_valid():
-                with transaction.commit_on_success():
-                    new_post = Post(user = request.user, activity_page = activity_page)
-                    new_post.save()
+                new_text_post = Text_Post(post = new_post, content = form.cleaned_data['content'])
+                new_text_post.save()
+        else:
+            request.session['message_form_with_error'] = form
 
-                    new_text_post = Text_Post(post = new_post, content = form.cleaned_data['content'])
-                    new_text_post.save()
-            else:
-                request.session['message_form_with_error'] = form
+        return HttpResponseRedirect(reverse('activity_page', args=[activity_page.url_code]))
+    else:
+        HttpResponseRedirect(reverse('main_page'))
 
-            return HttpResponseRedirect(reverse('activity_page', args=[activity_page.url_code]))
+@login_required
+def submit_event_post(request):
+    if request.method == 'POST':
+        form = EventPostForm(request.POST)
+        if form.is_valid():
+            try:
+                activity_page = Activity_Page.objects.get(pk = request.POST['activity_page'])
+            except Activity_Page.DoesNotExist:
+                return Http404
+            
+            with transaction.commit_on_success():
+                new_post = Post(user = request.user, activity_page = activity_page)
+                new_post.save()
 
-        elif type == 'event':
-            form = EventPostForm(request.POST)
-            if form.is_valid():
-                with transaction.commit_on_success():
-                    new_post = Post(user = request.user, activity_page = activity_page)
-                    new_post.save()
+                start_datetime = form.cleaned_data['start_date'] + datetime.timedelta(minutes = form.cleaned_data['start_time'])
 
-                    #TODO how to add those two times
+                if form.cleaned_data.get('end_date', '') and form.cleaned_data.get('end_time', ''):
+                    end_datetime = form.cleaned_data['end_date'] + datetime.timedelta(minutes = form.cleaned_data['end_time'])
+                else:
+                    end_datetime = None
 
-                    start_datetime = form.cleaned_data['start_date'] + datetime.timedelta(minutes = form.cleaned_data['start_time'])
-
-                    if form.cleaned_data.get('end_date', '') and form.cleaned_data.get('end_time', ''):
-                        end_datetime = form.cleaned_data['end_date'] + datetime.timedelta(minutes = form.cleaned_data['end_time'])
-                    else:
-                        end_datetime = None
-
-                    new_event_post = Event_Post(
-                        post = new_post,
-                        title = form.cleaned_data['title'],
-                        where = form.cleaned_data['where'],
-                        start_datetime = start_datetime,
-                        end_datetime = end_datetime,
-                        description = form.cleaned_data['description']
-                    )
-                    new_event_post.save()
-            else:
-
-                request.session['event_form_with_error'] = form
-
-            return HttpResponseRedirect(reverse('activity_page', args=[activity_page.url_code]))
-
-    return HttpResponseRedirect(reverse('main_page'))
+                new_event_post = Event_Post(
+                    post = new_post,
+                    title = form.cleaned_data['title'],
+                    where = form.cleaned_data['where'],
+                    start_datetime = start_datetime,
+                    end_datetime = end_datetime,
+                    description = form.cleaned_data['description']
+                )
+                new_event_post.save()
+        else:
+            request.session['event_form_with_error'] = form
+        
+        return HttpResponseRedirect(reverse('activity_page', args=[activity_page.url_code]))
+    else:
+        return HttpResponseRedirect(reverse('main_page'))
