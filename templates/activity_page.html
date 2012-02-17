@@ -103,8 +103,8 @@ margin: 0
 <div class="span9">
 <div class="content">
 <div class="head">
-    <a href="#" class="name">{{activity_page.name}}</a>
-    <span class="active-info">{{activity_page.post_set.all|length}} posts</span>
+    <a href="{{activity_page.url_code}}" class="name">{{activity_page.name}}</a>
+    <span class="active-info">| {{activity_page.post_set.all|length}} posts</span>
 </div>
 
 <div class="tabbable">
@@ -362,19 +362,18 @@ margin: 0
                 {%for post in all_posts %}
                 <div class="post">
                     {%if post.text_post.content %}
-                        <b>{{post.user.username}}: </b>{{post.text_post.content}}
+                        <b>{{post.user.username}}: </b>{{post.text_post.content}}<span class="post-end"> | {{post.post_time}}</span>
                     {%else%}
-                    <h5><i class="icon-calendar"></i><b>Event</b> by {{post.user.username}}</h5>
-                    <h5>title: {{post.event_post.title}}</h5>
-                    <h5>When: {{post.event_post.start_datetime}} - {{post.event_post.end_datetime}}</h5>
+                    <h5><i class="icon-calendar"></i><b>Event</b> by {{post.user.username}} <span class="post-end"> | posted at {{post.post_time}}</span></h5>
+                    <h5>Title: {{post.event_post.title}}</h5>
+                    <h5>When: {{post.event_post.start_datetime}}
+                        {% if post.event_post.end_datetime %}
+                        - {{post.event_post.end_datetime}}
+                        {% endif %}
+                    </h5>
                     <h5>Where: {{post.event_post.where}}</h5>
                     {{post.event_post.description}}
                     {%endif%}
-
-											<span class="post-end">
-												| {{post.post_time}}
-											</span>
-
                     <div class="comments">
                         {% if post.comment_set.all %}
                         {%for comment in post.comment_set.all %}
@@ -396,7 +395,47 @@ margin: 0
             </div>
         </div>
         <div class="tab-pane" id="4">
-            <p>I am section 2</p>
+            <div class="posts">
+                {% if not future_events %}
+                There are currently no events on this page. You can be the first to add one!
+                {% else %}
+                {% for event in future_events %}
+                <div class="post">
+                    <h5><i class="icon-calendar"></i><b>Event</b> by {{event.post.user.username}}
+											<span class="post-end">
+												| posted at {{event.post.post_time}}
+											</span></h5>
+                    <h5>Title: {{event.title}}</h5>
+                    <h5>When: {{event.start_datetime}}
+                        {% if event.end_datetime %}
+                            - {{event.end_datetime}}
+                        {% endif %}
+                    </h5>
+                    <h5>Where: {{event.where}}</h5>
+                    {% if event.description %}
+                    <h5>Notes: {{event.description}}</h5>
+                    {% endif %}
+
+
+                    <div class="comments">
+                        {% if event.post.comment_set.all %}
+                        {% for comment in event.post.comment_set.all %}
+                        <div><b>{{comment.user.username}}: </b>{{comment.content}} | {{comment.comment_time}}</div>
+                        {%endfor%}
+                        {%endif%}
+
+                        <div>
+                            {% if not user.is_authenticated %}
+                            <input class="input-large comment disabled" placeholder="login to make a comment..." disabled="">
+                            {% else %}
+                            <input class="input-large comment" placeholder="Write a comment..."><span class="comment-error-message" style="display:None">ah, please try again.</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+                {% endif %}
+            </div>
         </div>
     </div>
 </div>

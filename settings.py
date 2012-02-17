@@ -133,6 +133,7 @@ INSTALLED_APPS = (
     'bootstrap',
 )
 
+
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
 # the site admins on every HTTP 500 error.
@@ -159,5 +160,7 @@ LOGGING = {
 LOGIN_REDIRECT_URL = '/'  # fail on require_login
 
 AUTHENTICATION_BACKENDS = (
-    'django_activity.activity.backends.EmailOrUsernameModelBackend',
-    'django.contrib.auth.backends.ModelBackend')
+    'django_activity.activity.backends.EmailOrUsernameModelBackend'),  # I check is_active here.
+    #'django.contrib.auth.backends.ModelBackend')
+
+AUTH_PROFILE_MODULE = "activity.UserProfile"
