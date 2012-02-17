@@ -3,10 +3,9 @@ __author__ = 'rui'
 from django import forms
 from django.contrib.auth.models import User
 
-from activity.models import *
-
 from bootstrap.forms import BootstrapForm, Fieldset
 
+from activity.lib import send_registration_confirmation
 
 
 
@@ -23,10 +22,18 @@ class RegistrationForm(BootstrapForm):
     password2 = forms.CharField(label=u'Confirm Password', widget=forms.PasswordInput(), error_messages={'required':'e', 'invalid':''})
 
     def clean_email(self):
-        school_email_suffix = self.cleaned_data['email'].split('@')[-1]
-        if school_email_suffix == 'stanford.edu':
-            return self.cleaned_data['email']
-        raise forms.ValidationError('Please provide your stanford email address.')
+        try:
+            user = User.objects.select_related().get(email = self.cleaned_data['email'])
+            if user.is_active:
+                raise forms.ValidationError('this email is already registered and activated.')
+            else:
+                send_registration_confirmation(user)
+                raise forms.ValidationError("this email is already registered. We've e-mailed you confirmation code to the e-mail address you submitted.")
+        except User.DoesNotExist:
+            school_email_suffix = self.cleaned_data['email'].split('@')[-1]
+            if school_email_suffix == 'stanford.edu':
+                return self.cleaned_data['email']
+            raise forms.ValidationError('Please provide your stanford email address.')
 
 
     def clean_password2(self):
@@ -37,8 +44,6 @@ class RegistrationForm(BootstrapForm):
             if password1 == password2:
                 return password2
         raise forms.ValidationError('Passwords do not match')
-
-
 
 class TextPostForm(forms.Form):
     content = forms.CharField(max_length=500)

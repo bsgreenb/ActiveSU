@@ -8,6 +8,10 @@ from django.contrib.auth.models import User
 #Hmm lets see.  We want to get the Activity_Page LEFT JOIN (Post 
 #
 
+class UserProfile(models.Model):
+    user = models.OneToOneField(User)
+    confirmation_code = models.CharField(max_length = 33)
+
 class Activity_Page(models.Model):
     name = models.CharField(max_length=50)
     url_code = models.CharField(max_length=50) #This is the basis for the pretty url 

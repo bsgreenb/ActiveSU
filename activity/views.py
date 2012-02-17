@@ -11,17 +11,12 @@ from django.db import transaction
 
 from activity.models import *
 from activity.forms import RegistrationForm, TextPostForm, EventPostForm
+from activity.lib import send_registration_confirmation
 
 @login_required
 def logout_page(request):
     logout(request)
     return HttpResponseRedirect('/')
-
-def send_registration_confirmation(user):
-    p = user.get_profile()
-    title = "ActiveSU account confirmation"
-    content = "http://www.activesu.com/register/success/" + str(p.confirmation_code) + "/" + user.username
-    send_mail(title, content, 'no-reply@gsick.com', [user.email], fail_silently=False)
 
 def register_page(request):
     if request.method == 'POST':
@@ -35,7 +30,7 @@ def register_page(request):
             user.is_active = False
             user.save()
             confirmation_code = ''.join(random.choice(string.ascii_uppercase + string.digits + string.ascii_lowercase) for x in range(33))
-            p = Profile(user=user, confirmation_code=confirmation_code)
+            p = UserProfile(user=user, confirmation_code=confirmation_code)
             p.save()
             send_registration_confirmation(user)
             return HttpResponseRedirect(reverse('register_confirm'))
@@ -48,7 +43,7 @@ def confirm(request, confirmation_code, username):
     try:
         user = User.objects.get(username=username)
         profile = user.get_profile()
-        if profile.confirmation_code == confirmation_code and user.date_joined > (datetime.datetime.now()-datetime.timedelta(days=1)):
+        if profile.confirmation_code == confirmation_code:
             user.is_active = True
             user.save()
             auth_login(request, user)
