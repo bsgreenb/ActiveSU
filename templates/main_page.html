@@ -24,15 +24,17 @@
             {%endif%}
                 <div class="head">
                     <a href="{{activity.url_code}}" class="name">{{activity.name}}</a>
+                    <span class="active-info">200 posts</span>
                 </div>
                 {%if activity.post %}
                 <div class="index-posts">
+                    <div>Most recent posts:</div>
                     <div class="post">
                         <b>{{activity.post.user.username}}</b>
                         {%if activity.post.title %}
-                        {{activity.post.title}}
+                            {{activity.post.title}}
                         {%else%}
-                        {{activity.post.content}}
+                            {{activity.post.content}}
                         {%endif%}
                         <span class="post-end"> | {{activity.post.post_time}}</span>
                     </div>
