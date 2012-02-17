@@ -95,57 +95,61 @@ def submit_comment(request):
 #TODO: Possibly split into two.. qstn: model form issues?
 #TODO: Will take both text and event posts
 @login_required
-def submit_post(request, type):
-
+def submit_text_post(request):
     if request.method == 'POST':
         try:
             activity_page = Activity_Page.objects.get(pk = request.POST['activity_page'])
         except Activity_Page.DoesNotExist:
             return Http404
 
-        if type == 'message':
-            form = TextPostForm(request.POST)
-            if form.is_valid():
-                with transaction.commit_on_success():
-                    new_post = Post(user = request.user, activity_page = activity_page)
-                    new_post.save()
+        form = TextPostForm(request.POST)
+        if form.is_valid():
+            with transaction.commit_on_success():
+                new_post = Post(user = request.user, activity_page = activity_page)
+                new_post.save()
 
-                    new_text_post = Text_Post(post = new_post, content = form.cleaned_data['content'])
-                    new_text_post.save()
-            else:
-                request.session['message_form_with_error'] = form
+                new_text_post = Text_Post(post = new_post, content = form.cleaned_data['content'])
+                new_text_post.save()
+        else:
+            request.session['message_form_with_error'] = form
 
-            return HttpResponseRedirect(reverse('activity_page', args=[activity_page.url_code]))
+        return HttpResponseRedirect(reverse('activity_page', args=[activity_page.url_code]))
+    else:
+        HttpResponseRedirect(reverse('main_page'))
 
-        elif type == 'event':
-            form = EventPostForm(request.POST)
-            if form.is_valid():
-                with transaction.commit_on_success():
-                    new_post = Post(user = request.user, activity_page = activity_page)
-                    new_post.save()
+@login_required
+def submit_event_post(request):
+    if request.method == 'POST':
+        try:
+            activity_page = Activity_Page.objects.get(pk = request.POST['activity_page'])
+        except Activity_Page.DoesNotExist:
+            return Http404
 
-                    #TODO how to add those two times
+        form = EventPostForm(request.POST)
+        if form.is_valid():
+            with transaction.commit_on_success():
+                new_post = Post(user = request.user, activity_page = activity_page)
+                new_post.save()
 
-                    start_datetime = form.cleaned_data['start_date'] + datetime.timedelta(minutes = form.cleaned_data['start_time'])
+                start_datetime = form.cleaned_data['start_date'] + datetime.timedelta(minutes = form.cleaned_data['start_time'])
 
-                    if form.cleaned_data.get('end_date', '') and form.cleaned_data.get('end_time', ''):
-                        end_datetime = form.cleaned_data['end_date'] + datetime.timedelta(minutes = form.cleaned_data['end_time'])
-                    else:
-                        end_datetime = None
+                if form.cleaned_data.get('end_date', '') and form.cleaned_data.get('end_time', ''):
+                    end_datetime = form.cleaned_data['end_date'] + datetime.timedelta(minutes = form.cleaned_data['end_time'])
+                else:
+                    end_datetime = None
 
-                    new_event_post = Event_Post(
-                        post = new_post,
-                        title = form.cleaned_data['title'],
-                        where = form.cleaned_data['where'],
-                        start_datetime = start_datetime,
-                        end_datetime = end_datetime,
-                        description = form.cleaned_data['description']
-                    )
-                    new_event_post.save()
-            else:
-
-                request.session['event_form_with_error'] = form
-
-            return HttpResponseRedirect(reverse('activity_page', args=[activity_page.url_code]))
-
-    return HttpResponseRedirect(reverse('main_page'))
+                new_event_post = Event_Post(
+                    post = new_post,
+                    title = form.cleaned_data['title'],
+                    where = form.cleaned_data['where'],
+                    start_datetime = start_datetime,
+                    end_datetime = end_datetime,
+                    description = form.cleaned_data['description']
+                )
+                new_event_post.save()
+        else:
+            request.session['event_form_with_error'] = form
+        
+        return HttpResponseRedirect(reverse('activity_page', args=[activity_page.url_code]))
+    else:
+        return HttpResponseRedirect(reverse('main_page'))
