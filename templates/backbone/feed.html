@@ -1,0 +1,14 @@
+{% if activity_page.activity_page_user_set.all %}
+    <div class="members">
+
+        <div id="header">
+            Active Users
+        </div>
+        {% for activity_page_user in activity_page.activity_page_user_set.all %}
+
+            <div class="post">
+                {{activity_page_user.user.username}}
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
