@@ -10,13 +10,24 @@ from activity.library.send_mail import send_registration_confirmation
 class RegistrationForm(BootstrapForm):
     class Meta:
         layout = {
-            Fieldset('Register', 'email', 'password1', 'password2')
+            Fieldset('Register', 'username', 'email', 'password1', 'password2')
         }
 
     # we use prefix of the email as username
+    username = forms.CharField(label=u'Username', error_messages={'required':'', 'invalid':''})
     email = forms.EmailField(label=u'Stanford School Email', error_messages={'required':'please provide your stanford school email', 'invalid':'the email is invalid'})
     password1 = forms.CharField(label=u'Password', widget=forms.PasswordInput(), error_messages={'required':'please provide the password', 'invalid':'the password is invalid'})
     password2 = forms.CharField(label=u'Confirm Password', widget=forms.PasswordInput(), error_messages={'required':'please provide the confirm password', 'invalid':'the confirm password is invalid'})
+
+    def clean_username(self):
+        username = self.cleaned_data['username']
+        if not re.search(r'^\w+$', username):
+            raise forms.ValidationError('Usernames can only contain letters, numbers, and underscores.')
+        try:
+            User.objects.get(username=username)
+        except User.DoesNotExist:
+            return username
+        raise forms.ValidationError('An account with this username is already registered.')
 
     def clean_email(self):
         try:

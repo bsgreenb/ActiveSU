@@ -23,7 +23,7 @@ def register_page(request):
         form = RegistrationForm(request.POST)
         if form.is_valid():
             user = User.objects.create_user(
-                username = form.cleaned_data['email'].split('@')[0], #email prefix
+                username = form.cleaned_data['username'],
                 password = form.cleaned_data['password1'],
                 email = form.cleaned_data['email']
             )

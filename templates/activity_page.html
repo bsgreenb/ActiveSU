@@ -14,7 +14,18 @@
 
 <script>
     $(document).ready(function() {
-        
+
+        {% if event_form_with_error %}
+            $('#event-tab').click(); //from event post form.
+        {% endif %}
+
+        {% if not user.is_authenticated %}
+        $('.row input, .row select, .row button, .row select, .row textarea').addClass('disabled').attr('disabled', '');
+        $('#post-message').attr('placeholder', 'login to post a message...');
+        $('#post-what').attr('placeholder', 'login to post an event...');
+        $('.comment').attr('placeholder', 'login to post a comment...');
+
+        {% endif %}
         
         $('a.close').live('click',function() {
             $(this).parent('div.alert').remove();
@@ -109,7 +120,7 @@ margin: 0
         <a href="#1" data-toggle="tab">Message</a>
     </li>
     <li>
-        <a href="#2" data-toggle="tab">Event</a>
+        <a href="#2" data-toggle="tab" id="event-tab">Event</a>
     </li>
 </ul>
 
@@ -133,11 +144,9 @@ margin: 0
         </div>
         {% endif %}
 
-        {% if not user.is_authenticated %}
-        <input class="input-xlarge post-message disabled" disabled="" placeholder="Please login or sign up to write a message."/><button class="btn btn-success disabled" disabled="">Post</button>
-        {% else %}
+
         <input class="input-xlarge post-message" placeholder="Write a message..." name="content" id="post-message"/><button class="btn btn-success">Post</button>
-        {% endif %}
+
     </form>
 </div>
 
@@ -162,37 +171,22 @@ margin: 0
         {% endif %}
 
         <div class="control-group">
-            <label class="control-label">Name </label>
+            <label class="control-label">What </label>
             <div class="controls">
-                {% if not user.is_authenticated %}
-                <input class="input-xlarge disabled" type="text" value="" disabled=""/>
-                {% else %}
-                <input class="input-xlarge" type="text" value="" name="title"/>
-                {% endif %}
+                <input class="input-xlarge" type="text" value="" name="title" id="post-what"/>
             </div>
         </div>
 
         <div class="control-group">
             <label class="control-label">Where </label>
             <div class="controls">
-                {% if not user.is_authenticated %}
-                <input class="input-xlarge disabled" type="text" value="" disabled=""/>
-                {% else %}
                 <input class="input-xlarge" type="text" value="" name="where"/>
-                {% endif %}
             </div>
         </div>
 
         <div class="control-group">
             <label class="control-label">Start </label>
             <div class="controls">
-                {% if not user.is_authenticated %}
-                <input data-datepicker="datepicker" class="input-medium disabled" type="text" value="" disabled=""/>
-                <select class="span2 disabled" disabled="">
-                    <option>Time</option>
-                </select>
-                {% else %}
-                <!--<input data-datepicker="datepicker" class="input-medium" type="text" value="" name="start_date"/>-->
                 <input data-datepicker="datepicker" class="input-medium" type="text" value="" name="start_date"/>
                 <select class="span2" name="start_time">
                     <option value="0">12:00 am</option>
@@ -244,19 +238,12 @@ margin: 0
                     <option value="1380">11:00 pm</option>
                     <option value="1410">11:30 pm</option>
                 </select>
-                {% endif %}
             </div>
         </div>
 
         <div class="control-group">
             <label class="control-label">End (optional) </label>
             <div class="controls">
-                {% if not user.is_authenticated %}
-                <input data-datepicker="datepicker" class="input-medium disabled" type="text" value="" disabled=""/>
-                <select class="span2 disabled" disabled="">
-                    <option value="">Time</option>
-                </select>
-                {% else %}
                 <input data-datepicker="datepicker" class="input-medium" type="text" value="" name="end_date"/>
                 <select class="span2" name="end_time">
                     <option value="">Time</option>
@@ -309,29 +296,20 @@ margin: 0
                     <option value="1380">11:00 pm</option>
                     <option value="1410">11:30 pm</option>
                 </select>
-                {% endif %}
             </div>
         </div>
 
         <div class="control-group">
             <label class="control-label">Description (optional)</label>
             <div class="controls">
-                {% if not user.is_authenticated %}
-                <textarea class="input-xlarge disabled" rows="2" disabled=""></textarea>
-                {% else %}
                 <textarea name="description" class="input-xlarge" rows="2" ></textarea>
-                {% endif %}
             </div>
         </div>
 
         <div class="control-group">
             <label class="control-label"></label>
             <div class="controls">
-                {% if not user.is_authenticated %}
-                <button class="btn btn-success disabled" disabled="">Create Event</button>
-                {% else %}
                 <button class="btn btn-success" type="submit">Create Event</button>
-                {% endif %}
             </div>
         </div>
     </form>
@@ -363,10 +341,12 @@ margin: 0
                         <div><b>{{post.user.username}}</b></div>
                         <div><i class="icon-calendar"></i>{{post.event_post.title}}</div>
 
-                        <div>Start: {{post.event_post.start_datetime}}</div>
+                        <div>When: {{post.event_post.start_datetime}}
                             {% if post.event_post.end_datetime %}
-                            <div>End: {{post.event_post.end_datetime}}</div>
+                             - {{post.event_post.end_datetime}}
                             {% endif %}
+                        </div>
+
                         <div>Where: {{post.event_post.where}}</div>
                         <div>{{post.event_post.description}}</div>
                         <div><span class="post-end">Posted at {{post.post_time}}</span></div>
@@ -380,11 +360,7 @@ margin: 0
                         {%endif%}
 
                         <div class="{{post.id}}">
-                            {% if not user.is_authenticated %}
-                            <input class="input-large comment disabled" placeholder="Register/login to write a comment" disabled="">
-                            {% else %}
                             <input class="input-large comment" placeholder="Write a comment..." post-id="{{post.id}}"><span class="comment-error-message" style="display:None">ah, please try again.</span>
-                            {% endif %}
                         </div>
 
 
@@ -405,10 +381,12 @@ margin: 0
                         <div><b>{{event.post.user.username}}</b></div>
                         <div><i class="icon-calendar"></i>{{event.title}}</div>
 
-                        <div>Start: {{event.start_datetime}}</div>
+                        <div>When: {{event.start_datetime}}
                         {% if event.end_datetime %}
-                            <div>End: {{event.end_datetime}}</div>
+                            - {{event.end_datetime}}
                         {% endif %}
+                        </div>
+
                         <div>Where: {{event.where}}</div>
                         <div>{{event.description}}</div>
                         <div><span class="post-end">Posted at {{event.post.post_time}}</span></div>
@@ -422,11 +400,7 @@ margin: 0
                             {%endif%}
 
                             <div class="{{event.post.id}}">
-                                {% if not user.is_authenticated %}
-                                <input class="input-large comment disabled" placeholder="login to make a comment..." disabled="">
-                                {% else %}
                                 <input class="input-large comment" post-id="{{event.post.id}}" placeholder="Write a comment..."><span class="comment-error-message" style="display:None">ah, please try again.</span>
-                                {% endif %}
                             </div>
                         </div>
                     </div>
