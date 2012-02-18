@@ -13,6 +13,11 @@
 <script src="/static/js/plugin/events.js"></script>
 
 <script>
+
+    $('#send-email-modal').modal();
+
+
+
     $(document).ready(function() {
 
         {% if event_form_with_error %}
@@ -31,6 +36,32 @@
             $(this).parent('div.alert').remove();
         });
 
+
+        {% if activity_page.show_email %}
+        $('.email-me').click(function(){
+            $('#send-message-post-id').val($(this).attr('post-id'));
+            $('#send-messsage-alert').removeClass('alert-success alert-error').html('').hide();
+        });
+
+        $('#send-message-button').click(function(){
+            $.post('/sendmessage/', {
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+                post_id: $('#send-message-post-id').val(),
+                post_message: $('#send-message-message').val()
+                },
+                function(data){
+                    if (data['status'] == 'OK')
+                    {
+                        $('#send-message-alert').addClass('alert-success').html('You successfully sent the message').show();
+                    }
+                    else
+                    {
+                        $('#send-message-alert').addClass('alert-error').html(data['status']).show();
+                    }
+                }, "json");
+        });
+
+        {% endif %}
 
         /* Update datepicker plugin so that MM/DD/YYYY format is used. */
         $.extend($.fn.datepicker.defaults, {
@@ -126,6 +157,33 @@ margin: 0
 
 
 <div class="tab-content">
+    {% if activity_page.show_email %}
+
+    <!-- modal for send email -->
+    <div id="send-email-modal" class="modal hide fade">
+        <div class="modal-header">
+            <a class="close" data-dismiss="modal">×</a>
+            <h3>Send Message</h3>
+        </div>
+        <div class="modal-body">
+
+            <div id="send-message-alert" style="display:none">
+
+            </div>
+
+            <div>
+                <textarea class="span6" id="send-message-message" /></textarea>
+            </div>
+
+            <input type="hidden" id="send-message-post-id" value="" />
+        </div>
+        <div class="modal-footer">
+            <a href="#" class="btn btn-success" id="send-message-button">Message</a>
+        </div>
+    </div>
+
+    {% endif %}
+
     {% include 'backbone/post_message_form.html' %}
 
 

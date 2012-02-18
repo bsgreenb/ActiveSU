@@ -32,8 +32,8 @@
 
             {% endif %}
 
-             {% if post.activity_page.show_email %}
-                | <a href="#" class="{{post.id}}" ><i class="icon-envelope"></i>Email me</a></span></div>
+             {% if activity_page.show_email %}
+                | <a href="#send-email-modal" class="email-me" post-id="{{post.id}}" data-toggle="modal"><i class="icon-envelope"></i>Email me</a></span></div>
              {% else %}
                 </span></div>
              {% endif %}

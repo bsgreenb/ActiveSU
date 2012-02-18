@@ -7,6 +7,8 @@ from django.contrib.auth.models import User
 class UserProfile(models.Model):  # it's used for registration confirmation email.
     user = models.OneToOneField(User)
     confirmation_code = models.CharField(max_length = 33)
+    subscribe = models.BooleanField(default = True)
+    unsubscribe_code = models.CharField(max_length = 33)
 
 class Activity_Page(models.Model):
     name = models.CharField(max_length=50)
