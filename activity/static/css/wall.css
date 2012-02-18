@@ -25,8 +25,13 @@
 }
 
 .content .post-message{
-    width: 95%;
+    width: 75%;
     padding: 10px;
+}
+
+.content #post-message-form button{
+    margin-left: 10px;
+    padding: 9px 15px;
 }
 
 .content .posts{
@@ -57,6 +62,7 @@
     background-color: #EDEFF4;
     font-size: 12px;
     padding: 0;
+    width: 85%;
 }
 
 .content .posts .post .comments div{
@@ -66,7 +72,7 @@
 
 .content .posts .post .comments .comment{
     margin: 0;
-    width: 70%;
+    width: 80%;
 }
 
 .comments .comment-error-message{

@@ -3,6 +3,8 @@
 {% block css-link %}
 <link href="/static/css/wall.css" type="text/css" title="default" rel="stylesheet" media="screen, projection">
 
+<link href="/static/css/feed.css" type="text/css" title="default" rel="stylesheet" media="screen, projection">
+
 <link href="/static/css/datepicker.css" type="text/css" title="default" rel="stylesheet" media="screen, projection">
 {% endblock %}
 
@@ -43,14 +45,6 @@
             }
         });
 
-
-        $('#post-message').keypress(function(event) {
-            var keycode = (event.keyCode ? event.keyCode : event.which);
-            if(keycode == 13){
-                $('#post-message-form').submit();
-            }
-        });
-
         $('.input-large.comment').keypress(function(event) {
             $('.comment-error-message').hide();
             var target_divs = $('.' + $(this).attr('post-id'));
@@ -69,6 +63,7 @@
                         if ((status == 'success') && data.status == 'OK' && data.length != 0)
                         {
                             target_divs.before('<div>' + data.comment + '</div>');
+                            thisInput.val('');
                         }
                         else
                         {
@@ -101,7 +96,7 @@ margin: 0
 
 {% block content %}
 <div class="row">
-<div class="span9">
+<div class="span8">
 <div class="content">
 <div class="head">
     <a href="{{activity_page.url_code}}" class="name">{{activity_page.name}}</a>
@@ -122,7 +117,7 @@ margin: 0
 <div class="tab-content">
 
 <div class="tab-pane active" id="1">
-    <form method="POST" action="{% url post_message %}" id="post-message-form">
+    <form method="POST" class="form-inline" action="{% url post_message %}" id="post-message-form">
         <input type="hidden" name="activity_page" value="{{activity_page.id}}" />
         {% csrf_token %}
         {% if message_form_with_error %}
@@ -139,9 +134,9 @@ margin: 0
         {% endif %}
 
         {% if not user.is_authenticated %}
-        <input class="input-xlarge post-message disabled" disabled="" placeholder="Please login or sign up to write a message."/>
+        <input class="input-xlarge post-message disabled" disabled="" placeholder="Please login or sign up to write a message."/><button class="btn btn-success disabled" disabled="">Post</button>
         {% else %}
-        <input class="input-xlarge post-message" placeholder="Write a message..." name="content" id="post-message"/>
+        <input class="input-xlarge post-message" placeholder="Write a message..." name="content" id="post-message"/><button class="btn btn-success">Post</button>
         {% endif %}
     </form>
 </div>
@@ -349,7 +344,7 @@ margin: 0
 
 <div class="tabbable">
     <ul class="nav nav-pills" id="tab-posts">
-        <li class="active"><a href="#3" data-toggle="tab">Show All Messages</a></li>
+        <li class="active"><a href="#3" data-toggle="tab">Show All Posts</a></li>
         <li><a href="#4" data-toggle="tab">Show Only Events</a></li>
     </ul>
 
@@ -363,22 +358,24 @@ margin: 0
                 {%for post in all_posts %}
                 <div class="post">
                     {%if post.text_post.content %}
-                        <b>{{post.user.username}}: </b>{{post.text_post.content}}<span class="post-end"> | {{post.post_time}}</span>
+                        <div><b>{{post.user.username}}: </b>{{post.text_post.content}}<span class="post-end"> | {{post.post_time}}</span></div>
                     {%else%}
-                    <h5><i class="icon-calendar"></i><b>Event</b> by {{post.user.username}} <span class="post-end"> | posted at {{post.post_time}}</span></h5>
-                    <h5>Title: {{post.event_post.title}}</h5>
-                    <h5>When: {{post.event_post.start_datetime}}
-                        {% if post.event_post.end_datetime %}
-                        - {{post.event_post.end_datetime}}
-                        {% endif %}
-                    </h5>
-                    <h5>Where: {{post.event_post.where}}</h5>
-                    {{post.event_post.description}}
+                        <div><b>{{post.user.username}}</b></div>
+                        <div><i class="icon-calendar"></i>{{post.event_post.title}}</div>
+
+                        <div>Start: {{post.event_post.start_datetime}}</div>
+                            {% if post.event_post.end_datetime %}
+                            <div>End: {{post.event_post.end_datetime}}</div>
+                            {% endif %}
+                        <div>Where: {{post.event_post.where}}</div>
+                        <div>{{post.event_post.description}}</div>
+                        <div><span class="post-end">Posted at {{post.post_time}}</span></div>
                     {%endif%}
                     <div class="comments">
                         {% if post.comment_set.all %}
                         {%for comment in post.comment_set.all %}
                         <div><b>{{comment.user.username}}: </b>{{comment.content}}<span class="post-end"> | {{comment.comment_time}}</span></div>
+
                         {%endfor%}
                         {%endif%}
 
@@ -389,6 +386,8 @@ margin: 0
                             <input class="input-large comment" placeholder="Write a comment..." post-id="{{post.id}}"><span class="comment-error-message" style="display:None">ah, please try again.</span>
                             {% endif %}
                         </div>
+
+
                     </div>
                 </div>
                 {%endfor%}
@@ -402,39 +401,35 @@ margin: 0
                 There are currently no events on this page. You can be the first to add one!
                 {% else %}
                 {% for event in future_events %}
-                <div class="post">
-                    <h5><i class="icon-calendar"></i><b>Event</b> by {{event.post.user.username}}
-											<span class="post-end">
-												| posted at {{event.post.post_time}}
-											</span></h5>
-                    <h5>Title: {{event.title}}</h5>
-                    <h5>When: {{event.start_datetime}}
+                    <div class="post">
+                        <div><b>{{event.post.user.username}}</b></div>
+                        <div><i class="icon-calendar"></i>{{event.title}}</div>
+
+                        <div>Start: {{event.start_datetime}}</div>
                         {% if event.end_datetime %}
-                            - {{event.end_datetime}}
+                            <div>End: {{event.end_datetime}}</div>
                         {% endif %}
-                    </h5>
-                    <h5>Where: {{event.where}}</h5>
-                    {% if event.description %}
-                    <h5>Notes: {{event.description}}</h5>
-                    {% endif %}
+                        <div>Where: {{event.where}}</div>
+                        <div>{{event.description}}</div>
+                        <div><span class="post-end">Posted at {{event.post.post_time}}</span></div>
 
 
-                    <div class="comments">
-                        {% if event.post.comment_set.all %}
-                        {% for comment in event.post.comment_set.all %}
-                        <div><b>{{comment.user.username}}: </b>{{comment.content}}<span class="post-end"> | {{comment.comment_time}}</span></div></div>
-                        {%endfor%}
-                        {%endif%}
+                        <div class="comments">
+                            {% if event.post.comment_set.all %}
+                            {% for comment in event.post.comment_set.all %}
+                            <div><b>{{comment.user.username}}: </b>{{comment.content}}<span class="post-end"> | {{comment.comment_time}}</span></div>
+                            {%endfor%}
+                            {%endif%}
 
-                        <div class="{{event.post.id}}">
-                            {% if not user.is_authenticated %}
-                            <input class="input-large comment disabled" placeholder="login to make a comment..." disabled="">
-                            {% else %}
-                            <input class="input-large comment" post-id="{{event.post.id}}" placeholder="Write a comment..."><span class="comment-error-message" style="display:None">ah, please try again.</span>
-                            {% endif %}
+                            <div class="{{event.post.id}}">
+                                {% if not user.is_authenticated %}
+                                <input class="input-large comment disabled" placeholder="login to make a comment..." disabled="">
+                                {% else %}
+                                <input class="input-large comment" post-id="{{event.post.id}}" placeholder="Write a comment..."><span class="comment-error-message" style="display:None">ah, please try again.</span>
+                                {% endif %}
+                            </div>
                         </div>
                     </div>
-                </div>
                 {% endfor %}
                 {% endif %}
             </div>
@@ -444,6 +439,11 @@ margin: 0
     </div>
 </div>
 </div>
+</div>
+<div class="span3">
+
+    {% include 'backbone/feed.html' %}
+
 </div>
 </div>
 {% endblock %}

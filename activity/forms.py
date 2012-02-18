@@ -14,9 +14,9 @@ class RegistrationForm(BootstrapForm):
         }
 
     # we use prefix of the email as username
-    email = forms.EmailField(label=u'Stanford School Email', error_messages={'required':'a', 'invalid':''})
-    password1 = forms.CharField(label=u'Password', widget=forms.PasswordInput(), error_messages={'required':'d', 'invalid':''})
-    password2 = forms.CharField(label=u'Confirm Password', widget=forms.PasswordInput(), error_messages={'required':'e', 'invalid':''})
+    email = forms.EmailField(label=u'Stanford School Email', error_messages={'required':'please provide your stanford school email', 'invalid':'the email is invalid'})
+    password1 = forms.CharField(label=u'Password', widget=forms.PasswordInput(), error_messages={'required':'please provide the password', 'invalid':'the password is invalid'})
+    password2 = forms.CharField(label=u'Confirm Password', widget=forms.PasswordInput(), error_messages={'required':'please provide the confirm password', 'invalid':'the confirm password is invalid'})
 
     def clean_email(self):
         try:
@@ -30,7 +30,7 @@ class RegistrationForm(BootstrapForm):
             school_email_suffix = self.cleaned_data['email'].split('@')[-1]
             if school_email_suffix == 'stanford.edu':
                 return self.cleaned_data['email']
-            raise forms.ValidationError('Please provide your stanford email address.')
+            raise forms.ValidationError('please provide your stanford email address.')
 
 
     def clean_password2(self):
@@ -40,21 +40,21 @@ class RegistrationForm(BootstrapForm):
 
             if password1 == password2:
                 return password2
-        raise forms.ValidationError('Passwords do not match')
+        raise forms.ValidationError('passwords do not match')
 
 class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
 
 class TextPostForm(forms.Form):
-    content = forms.CharField(max_length=500)
-    activity_page = forms.IntegerField(min_value=1)
+    content = forms.CharField(max_length=500, error_messages={'required':'please provide the message', 'invalid':'please limit the message in 500 characters'})
+    activity_page = forms.IntegerField(min_value=1, error_messages={'required':'please provide the page number'})
 
 class EventPostForm(forms.Form):
-    title = forms.CharField(max_length=100)
-    start_date = forms.DateTimeField()
-    start_time = forms.IntegerField()
+    title = forms.CharField(max_length=100, error_messages={'required':'title is required', 'invalid':'please limit the title in 100 characters'})
+    where = forms.CharField(max_length = 200, error_messages={'required':'where is required', 'invalid':'where is invalid'})
+    start_date = forms.DateTimeField(error_messages={'required':'start date is required', 'invalid':'start date is invalid'})
+    start_time = forms.IntegerField(error_messages={'required':'start time is required', 'invalid':'start time is invalid'})
     end_date = forms.DateTimeField(required = False)
     end_time = forms.IntegerField(required = False)
-    where = forms.CharField(max_length = 200)
-    description = forms.CharField(max_length = 500, required=False)
+    description = forms.CharField(max_length = 500, required=False, error_messages={'required':'title is required', 'invalid':'please limit the description in 500 characters'})

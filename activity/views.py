@@ -116,13 +116,13 @@ def submit_comment(request):
 @login_required
 def submit_text_post(request):
     if request.method == 'POST':
+        try:
+            activity_page = Activity_Page.objects.get(pk = request.POST['activity_page'])
+        except Activity_Page.DoesNotExist:
+            return Http404
+
         form = TextPostForm(request.POST)
         if form.is_valid():
-            try:
-                activity_page = Activity_Page.objects.get(pk = request.POST['activity_page'])
-            except Activity_Page.DoesNotExist:
-                return Http404
-            
             with transaction.commit_on_success():
                 new_post = Post(user = request.user, activity_page = activity_page)
                 new_post.save()
@@ -139,13 +139,14 @@ def submit_text_post(request):
 @login_required
 def submit_event_post(request):
     if request.method == 'POST':
+        try:
+            activity_page = Activity_Page.objects.get(pk = request.POST['activity_page'])
+        except Activity_Page.DoesNotExist:
+            return Http404
+
         form = EventPostForm(request.POST)
+
         if form.is_valid():
-            try:
-                activity_page = Activity_Page.objects.get(pk = request.POST['activity_page'])
-            except Activity_Page.DoesNotExist:
-                return Http404
-            
             with transaction.commit_on_success():
                 new_post = Post(user = request.user, activity_page = activity_page)
                 new_post.save()
