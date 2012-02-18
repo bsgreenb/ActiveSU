@@ -347,7 +347,7 @@ margin: 0
                     {%if post.text_post.content %}
                         <div><b>{{post.user.username}}: </b>{{post.text_post.content}}<span class="post-end"> | {{post.post_time}}</span></div>
                     {%else%}
-                        <div><b>{{post.user.username}}</b></div>
+                        <div><b>{{post.user.username}}: </b></div>
                         <div><i class="icon-calendar"></i>{{post.event_post.title}}</div>
 
                         <div>When: {{post.event_post.start_datetime}}
@@ -387,7 +387,7 @@ margin: 0
                 {% else %}
                 {% for event in future_events %}
                     <div class="post">
-                        <div><b>{{event.post.user.username}}</b></div>
+                        <div><b>{{event.post.user.username}}: </b></div>
                         <div><i class="icon-calendar"></i>{{event.title}}</div>
 
                         <div>When: {{event.start_datetime}}
