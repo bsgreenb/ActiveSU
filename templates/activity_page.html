@@ -43,17 +43,18 @@
             }
         });
 
+        var ENTER_KEY_CODE = 13;
 
         $('#post-message').keypress(function(event) {
             var keycode = (event.keyCode ? event.keyCode : event.which);
-            if(keycode == 13){
+            if(keycode == ENTER_KEY_CODE){
                 $('#post-message-form').submit();
             }
         });
 
         $('.input-large.comment').keypress(function(event) {
             var keycode = (event.keyCode ? event.keyCode : event.which);
-            if(keycode == 13)
+            if(keycode == ENTER_KEY_CODE)
             {
                 thisInput = $(this); //store for later
                 $.ajax({
