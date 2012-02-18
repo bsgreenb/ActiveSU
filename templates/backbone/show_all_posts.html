@@ -1,0 +1,60 @@
+<div class="tab-pane active" id="3">
+    <div class="posts">
+        {%if not all_posts %}
+        There are currently no posts on this page.  You can be the first to add one!
+        {%else%}
+
+        {%for post in all_posts %}
+        <div class="post">
+            {%if post.text_post.content %}
+
+
+            <div><b>{{post.user.username}}: </b>{{post.text_post.content}}<span class="post-end"> | {{post.post_time}}
+
+
+            {%else%}
+
+
+            <div><b>{{post.user.username}}</b></div>
+            <div><i class="icon-calendar"></i>{{post.event_post.title}}</div>
+
+            <div>When: {{post.event_post.start_datetime}}
+                {% if post.event_post.end_datetime %}
+                - {{post.event_post.end_datetime}}
+                {% endif %}
+            </div>
+
+            <div>Where: {{post.event_post.where}}</div>
+            <div>{{post.event_post.description}}</div>
+
+            <div><span class="post-end">Posted at {{post.post_time}}
+
+
+            {% endif %}
+
+             {% if post.activity_page.show_email %}
+                | <a href="#" class="{{post.id}}" ><i class="icon-envelope"></i>Email me</a></span></div>
+             {% else %}
+                </span></div>
+             {% endif %}
+
+
+            <div class="comments">
+                {% if post.comment_set.all %}
+                {%for comment in post.comment_set.all %}
+                <div><b>{{comment.user.username}}: </b>{{comment.content}}<span class="post-end"> | {{comment.comment_time}}</span></div>
+
+                {%endfor%}
+                {%endif%}
+
+                <div class="{{post.id}}">
+                    <input class="input-large comment" placeholder="Write a comment..." post-id="{{post.id}}"><span class="comment-error-message" style="display:None">ah, please try again.</span>
+                </div>
+
+
+            </div>
+        </div>
+        {%endfor%}
+        {%endif%}
+    </div>
+</div>

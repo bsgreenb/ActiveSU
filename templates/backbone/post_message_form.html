@@ -1,0 +1,22 @@
+<div class="tab-pane active" id="1">
+    <form method="POST" class="form-inline" action="{% url post_message %}" id="post-message-form">
+        <input type="hidden" name="activity_page" value="{{activity_page.id}}" />
+        {% csrf_token %}
+        {% if message_form_with_error %}
+        <div class="alert alert-error">
+            <a class="close" href="#">x</a>
+            <ul>
+                {% for field in message_form_with_error %}
+                {% if field.errors %}
+                <li>{{ field.errors|striptags }}</li>
+                {% endif %}
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+
+
+        <input class="input-xlarge post-message" placeholder="Write a message..." name="content" id="post-message"/><button class="btn btn-success">Post</button>
+
+    </form>
+</div>
