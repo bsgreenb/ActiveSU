@@ -15,9 +15,9 @@ class RegistrationForm(BootstrapForm):
 
     # we use prefix of the email as username
     username = forms.CharField(label=u'Username', error_messages={'required':'', 'invalid':''})
-    email = forms.EmailField(label=u'Stanford School Email', error_messages={'required':'please provide your stanford school email', 'invalid':'the email is invalid'})
-    password1 = forms.CharField(label=u'Password', widget=forms.PasswordInput(), error_messages={'required':'please provide the password', 'invalid':'the password is invalid'})
-    password2 = forms.CharField(label=u'Confirm Password', widget=forms.PasswordInput(), error_messages={'required':'please provide the confirm password', 'invalid':'the confirm password is invalid'})
+    email = forms.EmailField(label=u'Stanford School Email', error_messages={'required':'Please provide your stanford.edu school email', 'invalid':'The email you entered is invalid'})
+    password1 = forms.CharField(label=u'Password', widget=forms.PasswordInput(), error_messages={'required':'Please provide a password', 'invalid':'The password you entered is invalid'})
+    password2 = forms.CharField(label=u'Confirm Password', widget=forms.PasswordInput(), error_messages={'required':'Please provide the password confirmation', 'invalid':'The confirmation password you provided is invalid.'})
 
     def clean_username(self):
         username = self.cleaned_data['username']
@@ -33,15 +33,15 @@ class RegistrationForm(BootstrapForm):
         try:
             user = User.objects.select_related().get(email = self.cleaned_data['email'])
             if user.is_active:
-                raise forms.ValidationError('this email is already registered and activated.')
+                raise forms.ValidationError('This email is already registered and activated.')
             else:
                 send_registration_confirmation(user)
-                raise forms.ValidationError("this email is already registered. We've e-mailed you confirmation code to the e-mail address you submitted.")
+                raise forms.ValidationError("This email is already registered. We've e-mailed you confirmation code to the e-mail address you submitted.")
         except User.DoesNotExist:
             school_email_suffix = self.cleaned_data['email'].split('@')[-1]
             if school_email_suffix == 'stanford.edu':
                 return self.cleaned_data['email']
-            raise forms.ValidationError('please provide your stanford email address.')
+            raise forms.ValidationError('Please provide your stanford.edu email address.')
 
 
     def clean_password2(self):
@@ -51,21 +51,21 @@ class RegistrationForm(BootstrapForm):
 
             if password1 == password2:
                 return password2
-        raise forms.ValidationError('passwords do not match')
+        raise forms.ValidationError('The confirmation password doesn\'t match')
 
 class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
 
 class TextPostForm(forms.Form):
-    content = forms.CharField(max_length=500, error_messages={'required':'please provide the message', 'invalid':'please limit the message in 500 characters'})
-    activity_page = forms.IntegerField(min_value=1, error_messages={'required':'please provide the page number'})
+    content = forms.CharField(max_length=500, error_messages={'required':'Please provide a message', 'invalid':'Please limit the message to 500 characters'})
+    activity_page = forms.IntegerField(min_value=1, error_messages={'required':''})
 
 class EventPostForm(forms.Form):
-    title = forms.CharField(max_length=100, error_messages={'required':'title is required', 'invalid':'please limit the title in 100 characters'})
-    where = forms.CharField(max_length = 200, error_messages={'required':'where is required', 'invalid':'where is invalid'})
-    start_date = forms.DateTimeField(error_messages={'required':'start date is required', 'invalid':'start date is invalid'})
-    start_time = forms.IntegerField(error_messages={'required':'start time is required', 'invalid':'start time is invalid'})
+    title = forms.CharField(max_length=100, error_messages={'required':'Event title ("What") is required', 'invalid':'Please limit the title to less than 100 characters'})
+    where = forms.CharField(max_length = 200, error_messages={'required':'The location ("Where") is required', 'invalid':'The provided location ("Where") is invalid'})
+    start_date = forms.DateTimeField(error_messages={'required':'Start date is required', 'invalid':'Start date is invalid'})
+    start_time = forms.IntegerField(error_messages={'required':'Start time is required', 'invalid':'Start time is invalid'})
     end_date = forms.DateTimeField(required = False)
     end_time = forms.IntegerField(required = False)
-    description = forms.CharField(max_length = 500, required=False, error_messages={'required':'title is required', 'invalid':'please limit the description in 500 characters'})
+    description = forms.CharField(max_length = 500, required=False, error_messages={'invalid':'Please limit the event description to 500 characters'})
