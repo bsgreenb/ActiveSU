@@ -36,6 +36,7 @@ class Activity_Page(models.Model):
 class Activity_Page_User(models.Model):
     activity_page = models.ForeignKey(Activity_Page)
     user = models.ForeignKey(User)
+    show_email = models.BooleanField(default = False)
     join_time = models.DateTimeField(auto_now_add = True)
 
 #Note: make sure to use a transaction when creating posts, becase we need to ensure that both the Post and specific Post_Type are inserted fine.
