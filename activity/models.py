@@ -10,7 +10,8 @@ class UserProfile(models.Model):  # it's used for registration confirmation emai
 
 class Activity_Page(models.Model):
     name = models.CharField(max_length=50)
-    url_code = models.CharField(max_length=50) #This is the basis for the pretty url 
+    url_code = models.CharField(max_length=50) #This is the basis for the pretty url
+    show_email = models.BooleanField(default = False)
     created = models.DateTimeField(auto_now_add = True)
     enabled = models.BooleanField(default = True)
     users = models.ManyToManyField(User, through='Activity_Page_User')
@@ -36,7 +37,6 @@ class Activity_Page(models.Model):
 class Activity_Page_User(models.Model):
     activity_page = models.ForeignKey(Activity_Page)
     user = models.ForeignKey(User)
-    show_email = models.BooleanField(default = False)
     join_time = models.DateTimeField(auto_now_add = True)
 
 #Note: make sure to use a transaction when creating posts, becase we need to ensure that both the Post and specific Post_Type are inserted fine.
