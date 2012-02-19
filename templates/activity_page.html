@@ -25,7 +25,7 @@
         {% endif %}
 
         {% if not user.is_authenticated %}
-        $('.row input, .row select, .row button, .row select, .row textarea').addClass('disabled').attr('disabled', '');
+        $('.row input, .row select, .row button, .row textarea').addClass('disabled').attr('disabled', '');
         $('#post-message').attr('placeholder', 'login to post a message...');
         $('#post-what').attr('placeholder', 'login to post an event...');
         $('.comment').attr('placeholder', 'login to post a comment...');
