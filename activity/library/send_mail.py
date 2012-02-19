@@ -25,7 +25,6 @@ def send_registration_confirmation(user):
     message.send()
 
 
-
 def send_email_to_post(post, content, to_user):
     plaintext = get_template('emails/send_email_to_post/message.txt')
     htmly = get_template('emails/send_email_to_post/message.html')

@@ -11,11 +11,23 @@
 
             <div><b>{{post.user.username}}: </b>{{post.text_post.content}}<span class="post-end"> | {{post.post_time}}
 
+            {% if activity_page.show_email %}
+            | <a href="#send-email-modal" class="email-me" post-id="{{post.id}}" data-toggle="modal"><i class="icon-envelope"></i>Email me</a>
+            {% endif %}
+
+
+            </span></div>
+
+
+
+
             {%else%}
 
             {% with post.event_post as event %}
             {% include 'backbone/loop_events.html'%}
             {% endwith %}
+
+            {% endif %}
 
             <div class="comments">
                 {% include 'backbone/loop_comments.html' %}
