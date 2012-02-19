@@ -8,18 +8,7 @@
         <div class="post">
             {%if post.text_post.content %}
 
-
-            <div><b>{{post.user.username}}: </b>{{post.text_post.content}}<span class="post-end"> | {{post.post_time}}
-
-            {% if activity_page.show_email %}
-            | <a href="#send-email-modal" class="email-me" post-id="{{post.id}}" data-toggle="modal"><i class="icon-envelope"></i>Email me</a>
-            {% endif %}
-
-
-            </span></div>
-
-
-
+            {% include 'backbone/loop_posts.html'%}
 
             {%else%}
 

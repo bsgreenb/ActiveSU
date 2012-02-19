@@ -1,9 +1,11 @@
-from activity.models import *
+import re
+
 from django import forms
 from django.contrib.auth.models import User
 
 from bootstrap.forms import BootstrapForm, Fieldset
 
+from activity.models import *
 from activity.library.send_mail import send_registration_confirmation
 
 

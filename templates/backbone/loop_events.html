@@ -10,7 +10,7 @@
 <div>Where: {{event.where}}</div>
 <div>{{event.description}}</div>
 
-<div><span class="post-end">Posted at {{post.post_time}}
+<div><span class="post-end">Posted at {{post.post_time|timesince}} ago
 
              {% if activity_page.show_email %}
                 | <a href="#send-email-modal" class="email-me" post-id="{{post.id}}" data-toggle="modal"><i class="icon-envelope"></i>Email me</a>

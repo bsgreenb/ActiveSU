@@ -16,7 +16,7 @@ def send_registration_confirmation(user):
     htmly = get_template('emails/registration/confirmation_email.html')
 
     data = Context({
-        'confiramtion_code':p.confirmation_code,
+        'confirmation_code':p.confirmation_code,
         'username':user.username
     })
 

@@ -10,6 +10,9 @@ class UserProfile(models.Model):  # it's used for registration confirmation emai
     subscribe = models.BooleanField(default = True)
     unsubscribe_code = models.CharField(max_length = 33)
 
+    def __unicode__(self):
+        return self.user.username
+
 class Activity_Page(models.Model):
     name = models.CharField(max_length=50)
     url_code = models.CharField(max_length=50) #This is the basis for the pretty url
