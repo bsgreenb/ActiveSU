@@ -36,6 +36,9 @@ urlpatterns = patterns('',
     url(r'^accounts/password/reset/(?P<uidb36>[0-9A-Za-z]+)-(?P<token>.+)/$', password_reset_confirm,{'post_reset_redirect' : '/accounts/password/done/'}),
     url(r'^accounts/password/done/$', password_reset_complete),
 
+    # unsubscribe
+    url(r'^unsubscribe/(?P<email>\w+)/(?P<unsubscribe_code>[0-9A-Za-z]+)'),
+
     # core
     url(r'^$', views.main_page, name="main_page"),
     
