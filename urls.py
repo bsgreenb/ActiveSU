@@ -37,7 +37,7 @@ urlpatterns = patterns('',
     url(r'^accounts/password/done/$', password_reset_complete),
 
     # unsubscribe
-    url(r'^unsubscribe/(?P<email>\w+)/(?P<unsubscribe_code>[0-9A-Za-z]+)'),
+    url(r'^unsubscribe/(?P<email>\w+)/(?P<unsubscribe_code>[0-9A-Za-z]+)/$',views.unsubscribe_page),
 
     # core
     url(r'^$', views.main_page, name="main_page"),

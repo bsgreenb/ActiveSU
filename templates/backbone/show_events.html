@@ -5,30 +5,16 @@
         {% else %}
         {% for event in future_events %}
         <div class="post">
-            <div><b>{{event.post.user.username}}</b></div>
-            <div><i class="icon-calendar"></i>{{event.title}}</div>
 
-            <div>When: {{event.start_datetime}}
-                {% if event.end_datetime %}
-                - {{event.end_datetime}}
-                {% endif %}
-            </div>
-
-            <div>Where: {{event.where}}</div>
-            <div>{{event.description}}</div>
-            <div><span class="post-end">Posted at {{event.post.post_time}}</span></div>
+            {% with event.post as post %}
+            {% include 'backbone/loop_events.html' %}
+            {% endwith %}
 
 
             <div class="comments">
-                {% if event.post.comment_set.all %}
-                {% for comment in event.post.comment_set.all %}
-                <div><b>{{comment.user.username}}: </b>{{comment.content}}<span class="post-end"> | {{comment.comment_time}}</span></div>
-                {%endfor%}
-                {%endif%}
-
-                <div class="{{event.post.id}}">
-                    <input class="input-large comment" post-id="{{event.post.id}}" placeholder="Write a comment..."><span class="comment-error-message" style="display:None">ah, please try again.</span>
-                </div>
+                {% with event.post as post %}
+                {% include 'backbone/loop_comments.html' %}
+                {% endwith %}
             </div>
         </div>
         {% endfor %}

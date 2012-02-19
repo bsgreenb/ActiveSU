@@ -89,13 +89,6 @@
 
         var ENTER_KEY_CODE = 13;
 
-        $('#post-message').keypress(function(event) {
-            var keycode = (event.keyCode ? event.keyCode : event.which);
-            if(keycode == ENTER_KEY_CODE){
-                $('#post-message-form').submit();
-            }
-        });
-
         $('.input-large.comment').keypress(function(event) {
             $('.comment-error-message').hide();
             var target_divs = $('.' + $(this).attr('post-id'));
@@ -104,7 +97,7 @@
             {
                 thisInput = $(this); //store for showing comment error message
                 $.ajax({
-                    url: 'submit_comment',
+                    url: '/submit_comment/',
                     type: 'POST',
                     data: 'post=' + thisInput.attr('post-id') + '&content=' + $(this).val() + '&csrfmiddlewaretoken={{ csrf_token }}',
                     complete: function (data, status)
@@ -160,7 +153,7 @@ margin: 0
         <a href="#1" data-toggle="tab">Message</a>
     </li>
     <li>
-        <a href="#2" data-toggle="tab" id="event-tab">Event</a>
+        <a href="#2" data-toggle="tab" id="event-tab">Activity</a>
     </li>
 </ul>
 
@@ -184,7 +177,7 @@ margin: 0
                 <textarea class="span6" id="send-message-message" /></textarea>
             </div>
 
-            <input type="hidden" id="send-message-post-id" value="" />
+            <input type="hidden" id="send-message-post-id" value=" " />
         </div>
         <div class="modal-footer">
             <a href="#" class="btn btn-success" id="send-message-button">Message</a>
@@ -208,7 +201,7 @@ margin: 0
 <div class="tabbable">
     <ul class="nav nav-pills" id="tab-posts">
         <li class="active"><a href="#3" data-toggle="tab">Show All Posts</a></li>
-        <li><a href="#4" data-toggle="tab">Show Only Events</a></li>
+        <li><a href="#4" data-toggle="tab">Show Only Activities</a></li>
     </ul>
 
     <div class="tab-content">

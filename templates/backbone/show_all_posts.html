@@ -11,47 +11,14 @@
 
             <div><b>{{post.user.username}}: </b>{{post.text_post.content}}<span class="post-end"> | {{post.post_time}}
 
-
             {%else%}
 
-
-            <div><b>{{post.user.username}}</b></div>
-            <div><i class="icon-calendar"></i>{{post.event_post.title}}</div>
-
-            <div>When: {{post.event_post.start_datetime}}
-                {% if post.event_post.end_datetime %}
-                - {{post.event_post.end_datetime}}
-                {% endif %}
-            </div>
-
-            <div>Where: {{post.event_post.where}}</div>
-            <div>{{post.event_post.description}}</div>
-
-            <div><span class="post-end">Posted at {{post.post_time}}
-
-
-            {% endif %}
-
-             {% if activity_page.show_email %}
-                | <a href="#send-email-modal" class="email-me" post-id="{{post.id}}" data-toggle="modal"><i class="icon-envelope"></i>Email me</a></span></div>
-             {% else %}
-                </span></div>
-             {% endif %}
-
+            {% with post.event_post as event %}
+            {% include 'backbone/loop_events.html'%}
+            {% endwith %}
 
             <div class="comments">
-                {% if post.comment_set.all %}
-                {%for comment in post.comment_set.all %}
-                <div><b>{{comment.user.username}}: </b>{{comment.content}}<span class="post-end"> | {{comment.comment_time}}</span></div>
-
-                {%endfor%}
-                {%endif%}
-
-                <div class="{{post.id}}">
-                    <input class="input-large comment" placeholder="Write a comment..." post-id="{{post.id}}"><span class="comment-error-message" style="display:None">ah, please try again.</span>
-                </div>
-
-
+                {% include 'backbone/loop_comments.html' %}
             </div>
         </div>
         {%endfor%}
