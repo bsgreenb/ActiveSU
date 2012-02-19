@@ -10,8 +10,8 @@ from django.utils import simplejson
 from django.db import transaction
 
 from activity.models import *
-from activity.forms import RegistrationForm, TextPostForm, EventPostForm, CommentForm
-from activity.library.send_mail import send_registration_confirmation
+from activity.forms import RegistrationForm, TextPostForm, EventPostForm, CommentForm, SendMessageForm
+from activity.library.send_mail import send_registration_confirmation, send_email_to_post
 
 @login_required
 def logout_page(request):
@@ -30,7 +30,8 @@ def register_page(request):
             user.is_active = False
             user.save()
             confirmation_code = ''.join(random.choice(string.ascii_uppercase + string.digits + string.ascii_lowercase) for x in range(33))
-            p = UserProfile(user=user, confirmation_code=confirmation_code)
+            unsubscribe_code = ''.join(random.choice(string.ascii_uppercase + string.digits + string.ascii_lowercase) for x in range(33))
+            p = UserProfile(user=user, confirmation_code=confirmation_code, unsubscribe_code = unsubscribe_code)
             p.save()
             send_registration_confirmation(user)
             return HttpResponseRedirect(reverse('register_confirm'))
@@ -50,6 +51,23 @@ def confirm(request, confirmation_code, username):
         return HttpResponseRedirect(reverse('main_page'))
     except:
         return HttpResponseRedirect(reverse('registration_page'))
+
+
+def unsubscribe_page(request, email, unsubscribe_code):
+    success = False
+    try:
+        user = User.objects.select_related().get(email = email)
+    except User.DoesNotExist:
+        message = "the email doesn't match any account"
+    else:
+        if user.get_profile.unsubscribe_code == unsubscribe_code:
+            user.get_profile.subscribe = False
+            success = True
+            message = 'You successfully unsubscribed the account'
+        else:
+            message = "Sorry. We can't subscribe your account"
+    return render_to_response('subscribe_success.html', dict(message = message, success = success), context_instance = RequestContext(request))
+
 
 #TODO: update the template once I figure this one out
 def main_page(request):
@@ -89,6 +107,23 @@ def activity_page(request, activity_url):
         event_form_with_error = ''
 
     return render_to_response('activity_page.html', dict(activity_page = activity_page, all_posts = all_posts, future_events = future_events, message_form_with_error = message_form_with_error, event_form_with_error = event_form_with_error), context_instance=RequestContext(request))
+
+
+@login_required
+def send_message_to_post(request):
+    if request.is_ajax:
+        form = SendMessageForm(request.POST)
+        if form.is_valid():
+            post = Post.objects.select_related().get(pk = form.cleaned_data['post_id'])
+            if post.activity_page.show_email:
+                send_email_to_post(post, form.cleaned_data['post_message'])
+                return HttpResponse(simplejson.dumps({'status':'OK'}))
+            else:
+                return HttpResponse(simplejson.dumps({'status':"this page doesn't support message feature"}))
+        else:
+            return HttpResponse(simplejson.dumps({'status':'the message is invalid'}))
+    return HttpResponse(simplejson.dumps({'status':'invalid request'}))
+
 
 #Note: We currently assume that they're a member of the page, but in later versions we might have to think out a more complex system for joining and leaving of pages.
 @login_required
@@ -136,6 +171,8 @@ def submit_text_post(request):
     else:
         HttpResponseRedirect(reverse('main_page'))
 
+
+
 @login_required
 def submit_event_post(request):
     if request.method == 'POST':
@@ -173,3 +210,5 @@ def submit_event_post(request):
         return HttpResponseRedirect(reverse('activity_page', args=[activity_page.url_code]))
     else:
         return HttpResponseRedirect(reverse('main_page'))
+
+

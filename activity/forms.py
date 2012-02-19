@@ -69,3 +69,9 @@ class EventPostForm(forms.Form):
     end_date = forms.DateTimeField(required = False)
     end_time = forms.IntegerField(required = False)
     description = forms.CharField(max_length = 500, required=False, error_messages={'invalid':'Please limit the event description to 500 characters'})
+
+class SendMessageForm(forms.Form):
+    post_id = forms.IntegerField()
+    post_message = forms.CharField(max_length = 500)
+
+

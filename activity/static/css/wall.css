@@ -52,6 +52,10 @@
     font-weight: normal;
 }
 
+.content #send-email-modal{
+    width: 490px;
+}
+
 .content .active-info{
     font-size: 13px;
     margin-left: 5px;

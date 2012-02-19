@@ -36,12 +36,17 @@ urlpatterns = patterns('',
     url(r'^accounts/password/reset/(?P<uidb36>[0-9A-Za-z]+)-(?P<token>.+)/$', password_reset_confirm,{'post_reset_redirect' : '/accounts/password/done/'}),
     url(r'^accounts/password/done/$', password_reset_complete),
 
+    # unsubscribe
+    url(r'^unsubscribe/(?P<email>\w+)/(?P<unsubscribe_code>[0-9A-Za-z]+)/$',views.unsubscribe_page),
+
     # core
     url(r'^$', views.main_page, name="main_page"),
     
-    url(r'^submit_text_post$', views.submit_text_post, name="post_message"),
-    url(r'^submit_event_post$', views.submit_event_post, name="post_event"),
-    url(r'^submit_comment$', views.submit_comment, name='post_comment'),
+    url(r'^submit_text_post/$', views.submit_text_post, name="post_message"),
+    url(r'^submit_event_post/$', views.submit_event_post, name="post_event"),
+    url(r'^submit_comment/$', views.submit_comment, name='post_comment'),
 
-    url(r'^(\w+)$', views.activity_page, name="activity_page"),
+    url(r'^sendmessage/$', views.send_message_to_post, name='send_message_to_post'),
+
+    url(r'^(\w+)/$', views.activity_page, name="activity_page"),
 )

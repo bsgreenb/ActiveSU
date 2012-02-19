@@ -1,0 +1,15 @@
+{% extends 'backbone/base.html' %}
+
+{% block content %}
+{% if success %}
+    <div class="alert alert-success">
+{% else %}
+    <div class="alert alert-error">
+{% endif %}
+
+
+        {{message}}
+
+
+    </div>
+{% endblock %}

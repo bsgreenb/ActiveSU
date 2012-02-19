@@ -7,10 +7,13 @@ from django.contrib.auth.models import User
 class UserProfile(models.Model):  # it's used for registration confirmation email.
     user = models.OneToOneField(User)
     confirmation_code = models.CharField(max_length = 33)
+    subscribe = models.BooleanField(default = True)
+    unsubscribe_code = models.CharField(max_length = 33)
 
 class Activity_Page(models.Model):
     name = models.CharField(max_length=50)
-    url_code = models.CharField(max_length=50) #This is the basis for the pretty url 
+    url_code = models.CharField(max_length=50) #This is the basis for the pretty url
+    show_email = models.BooleanField(default = False)
     created = models.DateTimeField(auto_now_add = True)
     enabled = models.BooleanField(default = True)
     users = models.ManyToManyField(User, through='Activity_Page_User')

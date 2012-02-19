@@ -1,0 +1,23 @@
+<div class="tab-pane" id="4">
+    <div class="posts">
+        {% if not future_events %}
+        There are currently no events on this page. You can be the first to add one!
+        {% else %}
+        {% for event in future_events %}
+        <div class="post">
+
+            {% with event.post as post %}
+            {% include 'backbone/loop_events.html' %}
+            {% endwith %}
+
+
+            <div class="comments">
+                {% with event.post as post %}
+                {% include 'backbone/loop_comments.html' %}
+                {% endwith %}
+            </div>
+        </div>
+        {% endfor %}
+        {% endif %}
+    </div>
+</div>
