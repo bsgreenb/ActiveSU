@@ -8,8 +8,6 @@ TEMPLATE_DEBUG = DEBUG
 EMAIL_HOST = 'localhost'
 EMAIL_PORT = 1025
 
-
-
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
 )

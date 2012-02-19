@@ -49,7 +49,7 @@ def confirm(request, confirmation_code, username):
             user.save()
             auth_login(request, user)
         return HttpResponseRedirect(reverse('main_page'))
-    except:
+    except User.DoesNotExist:
         return HttpResponseRedirect(reverse('registration_page'))
 
 
@@ -62,6 +62,7 @@ def unsubscribe_page(request, email, unsubscribe_code):
     else:
         if user.get_profile.unsubscribe_code == unsubscribe_code:
             user.get_profile.subscribe = False
+            user.get_profile.save()
             success = True
             message = 'You successfully unsubscribed the account'
         else:
