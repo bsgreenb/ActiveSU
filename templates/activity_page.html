@@ -87,11 +87,20 @@
             }
         });
 
+        var ENTER_KEY_CODE = 13;
+
+        $('#post-message').keypress(function(event) {
+            var keycode = (event.keyCode ? event.keyCode : event.which);
+            if(keycode == ENTER_KEY_CODE){
+                $('#post-message-form').submit();
+            }
+        });
+
         $('.input-large.comment').keypress(function(event) {
             $('.comment-error-message').hide();
             var target_divs = $('.' + $(this).attr('post-id'));
             var keycode = (event.keyCode ? event.keyCode : event.which);
-            if(keycode == 13)
+            if(keycode == ENTER_KEY_CODE)
             {
                 thisInput = $(this); //store for showing comment error message
                 $.ajax({
@@ -204,8 +213,6 @@ margin: 0
 
     <div class="tab-content">
         {% include 'backbone/show_all_posts.html' %}
-
-
 
 
         {% include 'backbone/show_events.html' %}

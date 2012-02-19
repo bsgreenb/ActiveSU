@@ -1,0 +1,8 @@
+send two variables
+{{username}}, {{confirmation_code}}
+
+the actual activiate link
+
+content = "http://www.activesu.com/register/success/{{confirmation_code}}/{{username}}
+
+
