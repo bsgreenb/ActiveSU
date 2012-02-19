@@ -1,8 +1,8 @@
-send two variables
-{{username}}, {{confirmation_code}}
+Hi {{username}}, Thanks for registering at ActiveSU!  To activate your account, click the link below:
 
-the actual activiate link
+http://www.activesu.com/register/success/{{confirmation_code}}/{{username}}
 
-content = "http://www.activesu.com/register/success/{{confirmation_code}}/{{username}}
+You can ignore this message if it was sent in error.
 
-
+Thanks,
+ActiveSU team

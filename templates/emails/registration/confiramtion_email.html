@@ -1,6 +1,22 @@
-send two variables
-{{username}}, {{confirmation_code}}
+<html>
+    <head>
+        <title>Welcome to ActiveSU</title>
+    </head>
 
-the actual activiate link
+    <body>
+        <table>
+            <tr><td>Hi {{username}}, Thanks for registering at ActiveSU!  To activate your account, click the link below: </td></tr>
+            <br />
 
-content = "http://www.activesu.com/register/success/{{confirmation_code}}/{{username}}
+            <tr><td><a href="http://www.activesu.com/register/success/{{confirmation_code}}/{{username}}"><U>http://www.activesu.com/register/success/{{confirmation_code}}/{{username}}</U></a></td></tr>
+
+            <br />
+            <tr><td>You can ignore this message if it was sent in error. If you have any questions, please feel free to <a href="http://www.activesu.com">contact us</a>.</td></tr>
+
+            <br />
+
+            <tr><td>Thanks,<br />ActiveSU team</td></tr>
+
+        </table>
+    </body>
+</html>
