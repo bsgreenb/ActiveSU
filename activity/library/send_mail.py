@@ -28,17 +28,17 @@ def send_registration_confirmation(user):
     message.send()
 
 
-def send_email_to_post(post, content, to_user):
+def send_email_to_post(from_user, content, to_user):
 
     SUBJECT = 'You got a message from ActiveSU'
-    FROM_EMAIL = post.user.email
+    FROM_EMAIL = from_user.email
     TO = to_user.email
 
     plaintext = get_template('emails/send_email_to_post/message.txt')
     htmly = get_template('emails/send_email_to_post/message.html')
 
     data = Context({
-        'sender_username':post.user.username,
+        'sender_username':from_user.username,
         'receiver_username':to_user.username,
         'content':content
     })

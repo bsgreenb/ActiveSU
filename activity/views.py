@@ -10,6 +10,7 @@ from django.utils import simplejson
 from django.db import transaction
 
 from activity.models import *
+from activity.backends import EmailOrUsernameModelBackend
 from activity.forms import RegistrationForm, TextPostForm, EventPostForm, CommentForm, SendMessageForm
 from activity.library.send_mail import send_registration_confirmation, send_email_to_post
 
@@ -42,13 +43,12 @@ def register_page(request):
 
 def confirm(request, confirmation_code, username):
     try:
-        user = User.objects.get(username=username)
+        user = User.objects.select_related().get(username=username)
         profile = user.get_profile()
         if profile.confirmation_code == confirmation_code:
             user.is_active = True
             user.save()
-            auth_login(request, user)
-        return HttpResponseRedirect(reverse('main_page'))
+        return render_to_response('registration/register_confirm_success.html', dict(), context_instance = RequestContext(request))
     except User.DoesNotExist:
         return HttpResponseRedirect(reverse('registration_page'))
 
@@ -117,7 +117,7 @@ def send_message_to_post(request):
         if form.is_valid():
             post = Post.objects.select_related().get(pk = form.cleaned_data['post_id'])
             if post.activity_page.show_email:
-                send_email_to_post(post, form.cleaned_data['post_message'])
+                send_email_to_post(request.user, form.cleaned_data['post_message'], post.user)
                 return HttpResponse(simplejson.dumps({'status':'OK'}))
             else:
                 return HttpResponse(simplejson.dumps({'status':"this page doesn't support message feature"}))
@@ -139,7 +139,7 @@ def submit_comment(request):
             new_comment.save()
 
             result['status'] = 'OK'
-            result['comment'] = '<b>%s: </b>%s <span class="post-end"> | %s </span>' % (request.user.username, content, new_comment.comment_time)
+            result['comment'] = '<b>%s: </b>%s <span class="post-end"> | 3 seconds ago </span>' % (request.user.username, content)
         else:
             result['status'] = 'invalid'
     
