@@ -9,7 +9,7 @@ from activity.models import *
 from activity.library.send_mail import send_registration_confirmation
 
 
-VALID_EMAIL_SUFFIX = ('iu.edu', 'indiana.edu', 'umail.iu.edu')
+VALID_EMAIL_SUFFIX = ('stanford.edu')
 
 
 class RegistrationForm(BootstrapForm):

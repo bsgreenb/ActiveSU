@@ -1,6 +1,6 @@
-Hey {{receiver_username}},
+Hey there,
 
-Your post is commented by {{sender_username}}.
+The post you involved is commented by {{sender_username}}.
 
 Click the following link to access the comment.
 

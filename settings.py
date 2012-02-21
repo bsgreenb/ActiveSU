@@ -4,7 +4,7 @@ import os.path
 SOUTH_TESTS_MIGRATE = False # unittest might need this
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
-SITE_NAME = 'ActiveIU'
+SITE_NAME = 'ActiveSU'
 
 EMAIL_HOST = 'localhost'
 EMAIL_PORT = 1025

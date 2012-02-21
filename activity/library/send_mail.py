@@ -29,11 +29,14 @@ def send_registration_confirmation(user):
     message.send()
 
 
-def send_message_to_post(from_user, content, to_user, action = 'email', page_link = None):
+def message_to_post(from_user,  to_user_list, content = None, action = 'email', page_link = None):
 
     SUBJECT = 'You got a message from ' + settings.SITE_NAME
     FROM_EMAIL = from_user.email
-    TO = to_user.email
+    TO = []
+    
+    for user in to_user_list:
+        TO.append(user.email)
     
     if action == 'email':
         plaintext = get_template('emails/send_email_to_post/message_for_email.txt')
@@ -42,20 +45,28 @@ def send_message_to_post(from_user, content, to_user, action = 'email', page_lin
         plaintext = get_template('emails/send_comment_message_to_post/message_for_comment.txt')
         htmly = get_template('emails/send_comment_message_to_post/message_for_comment.html')
         
-        
+    page_url = 'http://www.activeiu.com/'
+    
+    if page_link:
+        page_url = page_url + page_link
+    
+    if action == 'email':
+        receiver_username = to_user_list[0].username
+    else:
+        receiver_username = ''
         
     data = Context({
         'sender_username':from_user.username,
-        'receiver_username':to_user.username,
+        'receiver_username':receiver_username,
         'content':content, 
-        'site_name': 'ActiveIU',
-        'page_url': 'http://www.activeiu.com' + page_link
+        'site_name': 'ActiveSU',
+        'page_url': page_url
     })
 
     text_content = plaintext.render(data)
     html_content = htmly.render(data)
 
-    message = EmailMultiAlternatives(SUBJECT, text_content, FROM_EMAIL, [TO])
+    message = EmailMultiAlternatives(SUBJECT, text_content, FROM_EMAIL, TO)
     message.attach_alternative(html_content, "text/html")
     message.send()
     

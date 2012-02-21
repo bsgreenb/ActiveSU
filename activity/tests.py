@@ -9,7 +9,7 @@ from django.test import Client
 from activity.models import *
 from activity.forms import *
 
-FAKE_EMAIL = 'fakeuser@umail.iu.edu'
+FAKE_EMAIL = 'fakeuser@stanford.edu'
 
 def create_and_login_user():
 
@@ -42,7 +42,7 @@ class Test_RegistrationForm(TestCase):
         self.assertTrue(RegistrationForm(self.data).is_valid())
 
     def test_invalid_cases(self):
-        user = User.objects.get(pk=1)
+        user = User.objects.all()[0]
         existing_username = user.username
         existing_email = user.email
 
@@ -51,7 +51,7 @@ class Test_RegistrationForm(TestCase):
             'password2':'mopyard111',
             'username':existing_username,
             'email':existing_email,
-            'not_iu_email':'test@cc.edu'
+            'not_stanford_email':'test@cc.edu'
         }
 
         for case in cases:
@@ -61,8 +61,8 @@ class Test_RegistrationForm(TestCase):
                 self.data['username'] = cases['username']
             elif case == 'email':
                 self.data['email'] = cases['email']
-            elif case == 'not_iu_email':
-                self.data['email'] = cases['not_iu_email']
+            elif case == 'not_stanford_email':
+                self.data['email'] = cases['not_stanford_email']
 
         f = RegistrationForm(self.data)
         self.assertFalse(f.is_valid())
@@ -234,7 +234,7 @@ class Test_Message_To_Post(TestCase):
         
         self.assertEqual(len(mail.outbox), 1)
         
-        self.assertEqual(mail.outbox[0].subject, 'You got a message from ActiveIU')
+        self.assertEqual(mail.outbox[0].subject, 'You got a message from ActiveSU')
                 
         self.assertEqual(mail.outbox[0].from_email, self.created_user.email)
         
@@ -280,6 +280,21 @@ class Test_Submit_Comment(TestCase):
         last_comment = Comment.objects.all().order_by('-comment_time')[0]
         self.assertEqual(last_comment.content, data['content'])
         self.assertEqual(last_comment.post, self.post)
+        
+        self.assertContains(response, 'OK')
+        
+        self.assertEqual(len(mail.outbox), 1)
+        
+        self.assertEqual(mail.outbox[0].subject, 'You got a message from ActiveSU')
+                
+        self.assertEqual(mail.outbox[0].from_email, self.created_user.email)
+        
+        
+        for receiver_email in mail.outbox[0].to:
+            self.assertNotEqual(receiver_email, self.created_user.email) # not send to himself.
+        
+        
+        #self.assertEqual(mail.outbox[0].to[0], post.user.email)
         
         self.assertContains(response, 'OK')
              
