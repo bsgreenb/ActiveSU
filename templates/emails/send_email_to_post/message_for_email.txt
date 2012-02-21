@@ -6,4 +6,4 @@ You have a message from {{sender_username}}:
 
 Reply to this email to respond.
 
-ActiveSU team
+{{site_name}} team
