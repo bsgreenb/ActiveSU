@@ -29,19 +29,27 @@ def send_registration_confirmation(user):
     message.send()
 
 
-def send_email_to_post(from_user, content, to_user):
+def send_message_to_post(from_user, content, to_user, action = 'email', page_link = None):
 
     SUBJECT = 'You got a message from ' + settings.SITE_NAME
     FROM_EMAIL = from_user.email
     TO = to_user.email
-
-    plaintext = get_template('emails/send_email_to_post/message.txt')
-    htmly = get_template('emails/send_email_to_post/message.html')
-
+    
+    if action == 'email':
+        plaintext = get_template('emails/send_email_to_post/message_for_email.txt')
+        htmly = get_template('emails/send_email_to_post/message_for_email.html')
+    else:
+        plaintext = get_template('emails/send_comment_message_to_post/message_for_comment.txt')
+        htmly = get_template('emails/send_comment_message_to_post/message_for_comment.html')
+        
+        
+        
     data = Context({
         'sender_username':from_user.username,
         'receiver_username':to_user.username,
-        'content':content
+        'content':content, 
+        'site_name': 'ActiveIU',
+        'page_url': 'http://www.activeiu.com' + page_link
     })
 
     text_content = plaintext.render(data)
@@ -50,3 +58,6 @@ def send_email_to_post(from_user, content, to_user):
     message = EmailMultiAlternatives(SUBJECT, text_content, FROM_EMAIL, [TO])
     message.attach_alternative(html_content, "text/html")
     message.send()
+    
+    
+    

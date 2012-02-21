@@ -11,7 +11,7 @@ from django.db import transaction
 
 from activity.models import *
 from activity.forms import RegistrationForm, TextPostForm, EventPostForm, CommentForm, SendMessageForm
-from activity.library.send_mail import send_registration_confirmation, send_email_to_post
+from activity.library.send_mail import send_registration_confirmation, send_message_to_post
 
 @login_required
 def logout_page(request):
@@ -121,7 +121,7 @@ def send_message_to_post(request):
         if form.is_valid():
             post = Post.objects.select_related().get(pk = form.cleaned_data['post_id'])
             if post.activity_page.show_email:
-                send_email_to_post(request.user, form.cleaned_data['post_message'], post.user)
+                send_message_to_post(request.user, post.user, content = form.cleaned_data['post_message'], post.user)
                 return HttpResponse(simplejson.dumps({'status':'OK'}))
             else:
                 return HttpResponse(simplejson.dumps({'status':"this page doesn't support message feature"}))
@@ -144,6 +144,9 @@ def submit_comment(request):
 
             result['status'] = 'OK'
             result['comment'] = '<b>%s: </b>%s <span class="post-end"> | 3 seconds ago </span>' % (request.user.username, content)
+            
+            #send_message_to_post(request.user, post.user, action = 'comment', content=None, page_link = post.activity_page.url_code)
+            
         else:
             result['status'] = 'invalid'
     
