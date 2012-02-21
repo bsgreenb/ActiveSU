@@ -1,5 +1,6 @@
 __author__ = 'rui'
 
+from django.conf import settings
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import get_template
 from django.template import Context
@@ -7,8 +8,8 @@ from django.template import Context
 # get from SO: http://stackoverflow.com/questions/2809547/creating-email-templates-with-django
 
 def send_registration_confirmation(user):
-    SUBJECT = 'Welcome to ActiveSU'
-    FROM_EMAIL = 'no-reply@activesu.com'
+    SUBJECT = 'Welcome to ' + settings.SITE_NAME
+    FROM_EMAIL = 'no-reply@activeiu.com'
     TO = user.email
 
     p = user.get_profile()
@@ -30,7 +31,7 @@ def send_registration_confirmation(user):
 
 def send_email_to_post(from_user, content, to_user):
 
-    SUBJECT = 'You got a message from ActiveSU'
+    SUBJECT = 'You got a message from ' + settings.SITE_NAME
     FROM_EMAIL = from_user.email
     TO = to_user.email
 

@@ -4,6 +4,7 @@ import os.path
 SOUTH_TESTS_MIGRATE = False # unittest might need this
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
+SITE_NAME = 'ActiveIU'
 
 EMAIL_HOST = 'localhost'
 EMAIL_PORT = 1025
@@ -19,7 +20,8 @@ TEMPLATE_CONTEXT_PROCESSORS = ("django.contrib.auth.context_processors.auth",
                                "django.core.context_processors.media",
                                "django.core.context_processors.static",
                                "django.contrib.messages.context_processors.messages",
-                               "django.core.context_processors.request",)
+                               "django.core.context_processors.request",
+                               "activity.context_processor.config_settings",)
 
 
 MANAGERS = ADMINS

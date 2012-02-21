@@ -9,6 +9,9 @@ from activity.models import *
 from activity.library.send_mail import send_registration_confirmation
 
 
+VALID_EMAIL_SUFFIX = ('iu.edu', 'indiana.edu', 'umail.iu.edu')
+
+
 class RegistrationForm(BootstrapForm):
     class Meta:
         layout = {
@@ -17,7 +20,7 @@ class RegistrationForm(BootstrapForm):
 
     # we use prefix of the email as username
     username = forms.CharField(label=u'Username', error_messages={'required':'The username is required', 'invalid':'The username you entered is invalid'})
-    email = forms.EmailField(label=u'Stanford School Email', error_messages={'required':'Please provide your stanford.edu school email', 'invalid':'The email you entered is invalid'})
+    email = forms.EmailField(label=u'IU Email', error_messages={'required':'Please provide your iu.edu school email', 'invalid':'The email you entered is invalid'})
     password1 = forms.CharField(label=u'Password', widget=forms.PasswordInput(), error_messages={'required':'Please provide a password', 'invalid':'The password you entered is invalid'})
     password2 = forms.CharField(label=u'Confirm Password', widget=forms.PasswordInput(), error_messages={'required':'Please provide the password confirmation', 'invalid':'The confirmation password you provided is invalid.'})
 
@@ -41,9 +44,12 @@ class RegistrationForm(BootstrapForm):
                 raise forms.ValidationError("This email is already registered. We've e-mailed you confirmation code to the e-mail address you submitted.")
         except User.DoesNotExist:
             school_email_suffix = self.cleaned_data['email'].split('@')[-1]
-            if school_email_suffix == 'stanford.edu':
+            
+            
+            
+            if school_email_suffix in VALID_EMAIL_SUFFIX:
                 return self.cleaned_data['email']
-            raise forms.ValidationError('Please provide your stanford.edu email address')
+            raise forms.ValidationError('Please provide your iu.edu email address')
 
 
     def clean_password2(self):
@@ -61,7 +67,6 @@ class CommentForm(forms.ModelForm):
 
 class TextPostForm(forms.Form):
     content = forms.CharField(max_length=500, error_messages={'required':'Please provide a message', 'invalid':'Please limit the message to 500 characters'})
-    activity_page = forms.IntegerField(min_value=1)
 
 class EventPostForm(forms.Form):
     title = forms.CharField(max_length=100, error_messages={'required':'Activity title ("What") is required', 'invalid':'Please limit the title to less than 100 characters'})

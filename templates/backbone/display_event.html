@@ -13,9 +13,15 @@
 <div><span class="post-end">Posted at {{post.post_time|timesince}} ago
 
              {% if activity_page.show_email %}
-                | <a href="#send-email-modal" class="email-me" post-id="{{post.id}}" data-toggle="modal"><i class="icon-envelope"></i>Email me</a>
+                | <a href="#send-email-modal" class="email-me" post-id="{{post.id}}" data-toggle="modal" email-to="{{post.user.username}}"><i class="icon-envelope"></i>Email me</a>
              {% endif %}
-
+             
+             
+             
+             {% if not post.comment_set.all %}
+                                   
+                | <a href="#" class="click-to-comment" display-comment="{{post.id}}">Comment</a>
+            {% endif %}
              </span></div>
 
 

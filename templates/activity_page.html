@@ -35,10 +35,16 @@
         $('a.close').live('click',function() {
             $(this).parent('div.alert').remove();
         });
-
+        
+        
+        $('a.click-to-comment').click(function(e){
+            $('.' + $(this).attr('display-comment')).show();
+            e.preventDefault();
+            })
 
         {% if activity_page.show_email %}
         $('.email-me').click(function(){
+            $('#to').html($(this).attr('email-to'));
             $('#send-message-post-id').val($(this).attr('post-id'));
             $('#send-messsage-alert').removeClass('alert-success alert-error').html('').hide();
         });
@@ -153,7 +159,7 @@ margin: 0
         <a href="#1" data-toggle="tab">Message</a>
     </li>
     <li>
-        <a href="#2" data-toggle="tab" id="event-tab">Activity</a>
+        <a href="#2" data-toggle="tab" id="event-tab">Event</a>
     </li>
 </ul>
 
@@ -174,6 +180,8 @@ margin: 0
             </div>
 
             <div>
+                <div class="from-to"><span>From: </span><span>{{request.user.username}}</span></div>
+                <div class="from-to"><span>To: </span><span id="to"></span></div>
                 <textarea class="span6" id="send-message-message" /></textarea>
             </div>
 
@@ -201,7 +209,7 @@ margin: 0
 <div class="tabbable">
     <ul class="nav nav-pills" id="tab-posts">
         <li class="active"><a href="#3" data-toggle="tab">Show All Posts</a></li>
-        <li><a href="#4" data-toggle="tab">Show Only Activities</a></li>
+        <li><a href="#4" data-toggle="tab">Show Only Events</a></li>
     </ul>
 
     <div class="tab-content">

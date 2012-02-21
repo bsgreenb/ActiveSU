@@ -10,14 +10,13 @@ from django.utils import simplejson
 from django.db import transaction
 
 from activity.models import *
-from activity.backends import EmailOrUsernameModelBackend
 from activity.forms import RegistrationForm, TextPostForm, EventPostForm, CommentForm, SendMessageForm
 from activity.library.send_mail import send_registration_confirmation, send_email_to_post
 
 @login_required
 def logout_page(request):
     logout(request)
-    return HttpResponseRedirect('/')
+    return HttpResponseRedirect(reverse('main_page'))
 
 def register_page(request):
     if request.method == 'POST':
@@ -35,7 +34,7 @@ def register_page(request):
             p = UserProfile(user=user, confirmation_code=confirmation_code, unsubscribe_code = unsubscribe_code)
             p.save()
             send_registration_confirmation(user)
-            return HttpResponseRedirect(reverse('register_confirm'))
+            return render_to_response('registration/register_confirm.html', dict(), context_instance=RequestContext(request))
     else:
         form = RegistrationForm()
 
@@ -48,21 +47,26 @@ def confirm(request, confirmation_code, username):
         if profile.confirmation_code == confirmation_code:
             user.is_active = True
             user.save()
-        return render_to_response('registration/register_confirm_success.html', dict(), context_instance = RequestContext(request))
+            success = True
+        else:
+            success= False
+		
+        return render_to_response('registration/register_confirm_success.html', dict(success=success), context_instance = RequestContext(request))
+		
     except User.DoesNotExist:
-        return HttpResponseRedirect(reverse('registration_page'))
+        return HttpResponseRedirect(reverse('register'))
 
 
-def unsubscribe_page(request, email, unsubscribe_code):
+def unsubscribe_page(request, username, unsubscribe_code):
     success = False
     try:
-        user = User.objects.select_related().get(email = email)
+        user = User.objects.select_related().get(username = username)
     except User.DoesNotExist:
-        message = "the email doesn't match any account"
+        message = "the user doesn't match any account"
     else:
-        if user.get_profile.unsubscribe_code == unsubscribe_code:
-            user.get_profile.subscribe = False
-            user.get_profile.save()
+        if user.get_profile().unsubscribe_code == unsubscribe_code:
+            user.get_profile().subscribe = False
+            user.get_profile().save()
             success = True
             message = 'You successfully unsubscribed the account'
         else:
@@ -129,7 +133,7 @@ def send_message_to_post(request):
 #Note: We currently assume that they're a member of the page, but in later versions we might have to think out a more complex system for joining and leaving of pages.
 @login_required
 def submit_comment(request):
-    if request.is_ajax() and request.method == 'POST':
+    if request.is_ajax():
         result = {}
         form = CommentForm(dict(user=request.user.id, post = request.POST['post'], content=request.POST['content'])) #We use a ModelForm for validation
         if form.is_valid():

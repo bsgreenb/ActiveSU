@@ -8,12 +8,12 @@
         <div class="post">
             {%if post.text_post.content %}
 
-            {% include 'backbone/loop_posts.html'%}
+            {% include 'backbone/display_post.html'%}
 
             {%else%}
 
             {% with post.event_post as event %}
-            {% include 'backbone/loop_events.html'%}
+            {% include 'backbone/display_event.html'%}
             {% endwith %}
 
             {% endif %}

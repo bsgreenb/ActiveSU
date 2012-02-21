@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <html xmlns:fb="http://ogp.me/ns/fb#">
 <head>
-    <title>ActiveSU {% block title %}{% endblock %}</title>
+    <title>{{site_name}} {% block title %}{% endblock %}</title>
 	<link href="/static/css/bootstrap.css" type="text/css" title="default" rel="stylesheet" media="screen, projection">
 	<link href="/static/css/main.css" type="text/css" title="default" rel="stylesheet" media="screen, projection">
 
@@ -41,7 +41,7 @@
     <div class="navbar">
       <div class="navbar-inner">
         <div class="container">
-          <a class="brand" href="{% url main_page %}">ActiveSU</a>
+          <a class="brand" href="{% url main_page %}">{{site_name}}</a>
             <ul class="nav">
                 <li class="active">
                     <a href="{% url main_page %}">Home</a>
@@ -75,7 +75,6 @@
 
         {% endblock content %}
         <footer>
-            <p>ActiveSU&copy; 2012</p>
         </footer>
      </div> <!-- /container -->
 </body>
