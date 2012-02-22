@@ -9,8 +9,9 @@ SITE_NAME = 'ActiveSU'
 EMAIL_HOST = 'localhost'
 EMAIL_PORT = 1025
 
-ADMINS = ()  # error alerts.
-
+ADMINS = (
+    # ('Your Name', 'your_email@example.com'),
+)
 
 #Defaults + request processior
 TEMPLATE_CONTEXT_PROCESSORS = ("django.contrib.auth.context_processors.auth",
