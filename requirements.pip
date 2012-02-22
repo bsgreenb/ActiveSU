@@ -1,4 +1,4 @@
 Django==1.3.1
 outh==0.7.3
-e git://github.com/earle/django-bootstrap.git@23bcbcbed378131a39378585c5f74b05c862a37c#egg=bootstrap-dev
+-e git://github.com/earle/django-bootstrap.git@23bcbcbed378131a39378585c5f74b05c862a37c#egg=bootstrap-dev
 
