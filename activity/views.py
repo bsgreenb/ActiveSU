@@ -160,10 +160,8 @@ def submit_comment(request):
     
         return HttpResponse(simplejson.dumps(result))
     else:
-        return Http404
+        return HttpResponse(simplejson.dumps({'status':'invalid request'}))
 
-#TODO: Possibly split into two.. qstn: model form issues?
-#TODO: Will take both text and event posts
 @login_required
 def submit_text_post(request):
     if request.method == 'POST':
