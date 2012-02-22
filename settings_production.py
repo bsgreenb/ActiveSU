@@ -11,3 +11,4 @@ DATABASES = {
         'PORT': '', #empty string makes it default
     }
 }
+

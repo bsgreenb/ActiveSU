@@ -1,0 +1,9 @@
+Hey {{receiver_username}},
+
+You have a message from {{sender_username}}:
+
+{{content}}
+
+Reply to this email to respond.
+
+{{site_name}} team
