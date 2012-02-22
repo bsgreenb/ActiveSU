@@ -8,11 +8,22 @@ class Migration(SchemaMigration):
 
     def forwards(self, orm):
         
+        # Adding model 'UserProfile'
+        db.create_table('activity_userprofile', (
+            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('user', self.gf('django.db.models.fields.related.OneToOneField')(to=orm['auth.User'], unique=True)),
+            ('confirmation_code', self.gf('django.db.models.fields.CharField')(max_length=33)),
+            ('subscribe', self.gf('django.db.models.fields.BooleanField')(default=True)),
+            ('unsubscribe_code', self.gf('django.db.models.fields.CharField')(max_length=33)),
+        ))
+        db.send_create_signal('activity', ['UserProfile'])
+
         # Adding model 'Activity_Page'
         db.create_table('activity_activity_page', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('name', self.gf('django.db.models.fields.CharField')(max_length=50)),
             ('url_code', self.gf('django.db.models.fields.CharField')(max_length=50)),
+            ('show_email', self.gf('django.db.models.fields.BooleanField')(default=False)),
             ('created', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
             ('enabled', self.gf('django.db.models.fields.BooleanField')(default=True)),
         ))
@@ -69,6 +80,9 @@ class Migration(SchemaMigration):
 
     def backwards(self, orm):
         
+        # Deleting model 'UserProfile'
+        db.delete_table('activity_userprofile')
+
         # Deleting model 'Activity_Page'
         db.delete_table('activity_activity_page')
 
@@ -95,6 +109,7 @@ class Migration(SchemaMigration):
             'enabled': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
+            'show_email': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'url_code': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
             'users': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['auth.User']", 'through': "orm['activity.Activity_Page_User']", 'symmetrical': 'False'})
         },
@@ -106,7 +121,7 @@ class Migration(SchemaMigration):
             'user': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['auth.User']"})
         },
         'activity.comment': {
-            'Meta': {'object_name': 'Comment'},
+            'Meta': {'ordering': "['comment_time']", 'object_name': 'Comment'},
             'comment_time': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
             'content': ('django.db.models.fields.CharField', [], {'max_length': '250'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
@@ -124,7 +139,7 @@ class Migration(SchemaMigration):
             'where': ('django.db.models.fields.CharField', [], {'max_length': '200'})
         },
         'activity.post': {
-            'Meta': {'object_name': 'Post'},
+            'Meta': {'ordering': "['-post_time']", 'object_name': 'Post'},
             'activity_page': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['activity.Activity_Page']"}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'post_time': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
@@ -135,6 +150,14 @@ class Migration(SchemaMigration):
             'content': ('django.db.models.fields.CharField', [], {'max_length': '500'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'post': ('django.db.models.fields.related.OneToOneField', [], {'to': "orm['activity.Post']", 'unique': 'True'})
+        },
+        'activity.userprofile': {
+            'Meta': {'object_name': 'UserProfile'},
+            'confirmation_code': ('django.db.models.fields.CharField', [], {'max_length': '33'}),
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'subscribe': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
+            'unsubscribe_code': ('django.db.models.fields.CharField', [], {'max_length': '33'}),
+            'user': ('django.db.models.fields.related.OneToOneField', [], {'to': "orm['auth.User']", 'unique': 'True'})
         },
         'auth.group': {
             'Meta': {'object_name': 'Group'},
