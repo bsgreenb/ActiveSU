@@ -56,6 +56,14 @@
     width: 490px;
 }
 
+.content #send-email-modal .from-to{
+    margin-bottom: 5px;
+}
+
+.content #send-email-modal #send-message-alert{
+    padding:5px;
+}
+
 .content .active-info{
     font-size: 13px;
     margin-left: 5px;

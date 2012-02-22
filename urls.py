@@ -19,8 +19,7 @@ urlpatterns = patterns('',
 
     # register
     url(r'^register/$', anonymous_required(views.register_page, '/'), name="register"),
-    url(r'^register/confirm/$', direct_to_template, {'template':'registration/register_confirm.html'}, name="register_confirm"),
-    url(r'register/success/(?P<confirmation_code>[0-9A-Za-z]+)/(?P<username>.+)/$', views.confirm),
+    url(r'register/success/(?P<confirmation_code>[0-9A-Za-z]+)/(?P<username>.+)/$', views.confirm, name="register_success"),
 
     url(r'^logout/$', views.logout_page, name="logout"),
     (r'^password/change/$', password_change),
@@ -37,7 +36,7 @@ urlpatterns = patterns('',
     url(r'^accounts/password/done/$', password_reset_complete),
 
     # unsubscribe
-    url(r'^unsubscribe/(?P<email>\w+)/(?P<unsubscribe_code>[0-9A-Za-z]+)/$',views.unsubscribe_page),
+    url(r'^unsubscribe/(?P<username>\w+)/(?P<unsubscribe_code>[0-9A-Za-z]+)/$',views.unsubscribe_page, name="unsubscribe_page"),
 
     # core
     url(r'^$', views.main_page, name="main_page"),

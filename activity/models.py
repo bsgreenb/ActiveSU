@@ -10,6 +10,9 @@ class UserProfile(models.Model):  # it's used for registration confirmation emai
     subscribe = models.BooleanField(default = True)
     unsubscribe_code = models.CharField(max_length = 33)
 
+    def __unicode__(self):
+        return self.user.username
+
 class Activity_Page(models.Model):
     name = models.CharField(max_length=50)
     url_code = models.CharField(max_length=50) #This is the basis for the pretty url
@@ -34,7 +37,7 @@ class Activity_Page(models.Model):
         Gets all future events for the activity page, ordered by when the event will happen, not when it was posted. Also gets the comments for those events
         """
         #TODO. would this cause problem ????
-        return Event_Post.objects.filter(post__activity_page=self, start_datetime__gt=datetime.datetime.now().date()).select_related().order_by('start_datetime', 'post__comment__comment_time')
+        return Event_Post.objects.filter(post__activity_page=self, start_datetime__gt=datetime.datetime.now().date()).select_related().order_by('start_datetime')
 
 class Activity_Page_User(models.Model):
     activity_page = models.ForeignKey(Activity_Page)

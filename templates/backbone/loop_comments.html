@@ -1,12 +1,22 @@
+
 {% if post.comment_set.all %}
 {%for comment in post.comment_set.all %}
-<div><b>{{comment.user.username}}: </b>{{comment.content}}<span class="post-end"> | {{comment.comment_time}}</span></div>
+<div><b>{{comment.user.username}}: </b>{{comment.content}}<span class="post-end"> | {{comment.comment_time|timesince}} ago</span></div>
 
 {%endfor%}
+<div class="{{post.id}}">
+
+    <input class="input-large comment" placeholder="Write a comment..." post-id="{{post.id}}"><span class="comment-error-message" style="display:None">ah, please try again.</span>
+
+</div>
+{% else %}
+
+<div class="{{post.id}}" style="display:None">
+
+    <input class="input-large comment" placeholder="Write a comment..." post-id="{{post.id}}"><span class="comment-error-message" style="display:None">ah, please try again.</span>
+    
+</div>    
 {%endif%}
 
-<div class="{{post.id}}">
-    <input class="input-large comment" placeholder="Write a comment..." post-id="{{post.id}}"><span class="comment-error-message" style="display:None">ah, please try again.</span>
-</div>
 
 

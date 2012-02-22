@@ -1,0 +1,15 @@
+{% extends "backbone/base.html" %}
+
+{% block title %} - Register Confirmation{% endblock %}
+
+{% block content %}
+{% if success %}
+<div class="alert alert-success">
+    <p>Congratulation. You successfully activated your account. Now you can <a href="{%url login %}"> login </a>to make your fist post.</p>
+</div>
+{% else %}
+<div class="alert alert-error">
+    <p>Sorry. the confirmation code doesn't match any user. Make sure you are using the right link.</p>
+</div>
+{% endif %}
+{% endblock %}

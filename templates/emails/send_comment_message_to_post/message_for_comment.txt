@@ -1,0 +1,9 @@
+Hey there,
+
+The post you involved is commented by {{sender_username}}.
+
+Click the following link to access the comment.
+
+{{page_url}}
+
+{{site_name}} team

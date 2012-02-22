@@ -8,14 +8,15 @@
         <div class="post">
             {%if post.text_post.content %}
 
-
-            <div><b>{{post.user.username}}: </b>{{post.text_post.content}}<span class="post-end"> | {{post.post_time}}
+            {% include 'backbone/display_post.html'%}
 
             {%else%}
 
             {% with post.event_post as event %}
-            {% include 'backbone/loop_events.html'%}
+            {% include 'backbone/display_event.html'%}
             {% endwith %}
+
+            {% endif %}
 
             <div class="comments">
                 {% include 'backbone/loop_comments.html' %}
