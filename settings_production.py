@@ -1,13 +1,14 @@
-from settings import *
+DEBUG = False
+TEMPLATE_DEBUG = False
 
-DEBUG = TEMPLATE_DEBUG = False
-DATABASE_NAME = 
-DATABASE_USER = 
-DATABASE_PASSWORD = 
+DATABASES = {
+    'default': {
+        'ENGINE': 'mysql',
+        'NAME': 'activity', #or path to db file if using sqlite3
+        'USER': 'activity', #not used with sqlite3
+        'PASSWORD': 'Mopyard1', #not used with sqlite3
+        'HOST': '', #empty string makes it localhost
+        'PORT': '', #empty string makes it default
+    }
+}
 
-SEND_BROKEN_LINK_EMAILS = True # get broken email alert
-
-ADMINS = (  # error alerts.
-    ('rui xia', 'ruixia21@gmail.com'),
-    ('ben greenberg', 'bsgreenb@gmail.com'),
-)
