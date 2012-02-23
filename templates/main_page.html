@@ -27,7 +27,7 @@
             {%endif%}
                 <div class="head">
                     <a href="{{activity.url_code}}" class="name">{{activity.name}}</a>
-                    <span class="active-info">| {{activity.post_set.all|length}} posts</span>
+                    <span class="active-info">&middot; {{activity.post_set.all|length}} posts</span>
                 </div>
                 <div class="index-posts">
                 {%if activity.post_set.all %}
@@ -41,7 +41,7 @@
                                 {{post.text_post.content}}
                             {%endif%}
 
-                            <span class="post-end"> | {{post.post_time|timesince}}</span>
+                            <span class="post-end"> &middot; {{post.post_time|timesince}}</span>
                         </div>
                     {%endfor%}
                     <div class="post"><a href="{{activity.url_code}}"><i class="icon-comment"></i> view and comment all posts</a></div>

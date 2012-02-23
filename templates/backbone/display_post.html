@@ -1,15 +1,15 @@
-<div><b>{{post.user.username}}: </b>{{post.text_post.content}}<span class="post-end"> | {{post.post_time|timesince}} ago
+<div><b>{{post.user.username}}: </b>{{post.text_post.content}}<span class="post-end"> &middot; {{post.post_time|timesince}} ago
             
 
             {% if activity_page.show_email %}
-            | <a href="#send-email-modal" class="email-me" post-id="{{post.id}}" email-to="{{post.user.username}}" data-toggle="modal"><i class="icon-envelope"></i>Email me</a>
+            &middot; <a href="#send-email-modal" class="email-me" post-id="{{post.id}}" email-to="{{post.user.username}}" data-toggle="modal"><i class="icon-envelope"></i>Email me</a>
                                                                        
             {% endif %}
 
             
             {% if not post.comment_set.all %}
                                    
-            | <a href="#" class="click-to-comment" display-comment="{{post.id}}">Comment</a>
+            &middot; <a href="#" class="click-to-comment" display-comment="{{post.id}}">Comment</a>
             {% endif %}
             
             
