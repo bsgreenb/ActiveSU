@@ -1,6 +1,8 @@
 # Django settings for django_activity project.
 import os.path
 
+SITE_NAME = 'ActiveSU'
+
 SOUTH_TESTS_MIGRATE = True # unittest might need this
 
 ADMINS = (
