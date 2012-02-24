@@ -1,0 +1,17 @@
+.members{
+    border-top: 1px solid #D2D9E7;
+    padding: 5px 8px;
+    background-color: #EDEFF4;
+    margin: 95px 0 0 20px;
+}
+
+.members #header{
+    font-size: 14px;
+    font-weight: bold;
+    padding: 5px 0;
+}
+
+.members .post{
+    border-top: 1px solid #D2D9E7;
+    padding: 5px 0;
+}
